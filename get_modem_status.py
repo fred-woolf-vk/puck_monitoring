@@ -1,10 +1,10 @@
-/**************************************************************/
-* get_modem_status.py
-* Author: Fred Woolf
-* Date:   Jan 18, 2021
-* Copyright Vertical Knowledge, Inc.
-* version 1.0
-***************************************************************/
+#**************************************************************/
+# get_modem_status.py
+# Author: Fred Woolf
+# Date:   Jan 18, 2021
+# Copyright Vertical Knowledge, Inc.
+# version 1.0
+#**************************************************************/
 
 import subprocess
 MODEM_IN_LINE = 4
