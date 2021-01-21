@@ -8,6 +8,7 @@ After=network.target
 # User=spark
 # Type=simple
 # PIDFile=/run/my-service.pid
+WorkingDirectory=/home/user/influxdb/
 ExecStart=/home/user/influxdb/puck_monitoring_script.sh
 ExecReload=/home/user/influxdb/puck_monitoring_script.sh reload
 # ExecStop=/home/user/influxdb/   stop
