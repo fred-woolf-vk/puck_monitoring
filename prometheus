@@ -1,0 +1,3 @@
+# Set the command-line arguments to pass to the server.
+ARGS="--storage.tsdb.retention=2d"
+
