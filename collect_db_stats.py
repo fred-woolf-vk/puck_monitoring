@@ -20,11 +20,10 @@ current_ip_addr = socket.gethostbyname(socket.gethostname())
 print (current_ip_addr)
 client=InfluxDBClient(host=current_ip_addr, port="8086")
 
-DATA_COLLECTION_INTERVAL_IN_SECS = 10
+DATA_COLLECTION_INTERVAL_IN_SECS = 15
 NUM_PINGS_TO_AVERAGE = 5
 
 # setup up influx db
-print(client.get_list_database())
 if 'GW_Collections_DB' in client.get_list_database():
 	client.switch_database('GW_Collections_DB2')
 else:
@@ -49,16 +48,16 @@ def calculate_percentage_uptime(modem_num, stats_connected):
 	global total_time_in_secs_script_running, prev_time, time_increment_in_sec_Modem
 	
 	# if "connected" status in mmcli bearer is "yes" then add data collection interval to the total time available
-	print("\n% 1 available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num], time_increment_in_sec_Modem)
-	print(" connected  ", stats_connected)
+	#print("\n% 1 available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num], time_increment_in_sec_Modem)
+	#print(" connected  ", stats_connected)
 	if 'yes' in stats_connected:
-	    total_available_time_in_secs_modems[modem_num] = total_available_time_in_secs_modems[modem_num] + time_increment_in_sec_Modem
+		total_available_time_in_secs_modems[modem_num] = total_available_time_in_secs_modems[modem_num] + time_increment_in_sec_Modem
 
-	    print("num secs = ", total_time_in_secs_script_running, "num_min = ", total_time_in_secs_script_running / 60)
-	    print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running)	
-	    print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num])
+		#print("num secs = ", total_time_in_secs_script_running, "num_min = ", total_time_in_secs_script_running / 60)
+	    #print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running)	
+	    #print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num])
 	else:
-	    print("Warning: modem not connected")
+		print("Warning: modem not connected")
 
 	percentage_uptime = total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running
 	return percentage_uptime
@@ -69,7 +68,7 @@ while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 		list_all_stats = get_modem_stats()
-		print("\n", list_all_stats, "\n")
+		#print("\n", list_all_stats, "\n")
 		for i in range(len(list_all_stats)):
 			current_interface = 'wwan0'
 			current_modem = 'Modem 0'
@@ -79,31 +78,30 @@ while(1):
 
 			# check ping times to NY server
 			ping_time_wwan[i] = get_average_ping_time(current_interface, str(NUM_PINGS_TO_AVERAGE))
-			print(" ping time[" + str(i) + "]:" + str(ping_time_wwan[i]))
+			#print(" ping time[" + str(i) + "]:" + str(ping_time_wwan[i]))
 
 			# some elements can be randomly missing in data updates from the modem; make sure any missing data returns -1
 			try:
 				duration_min0 = (list_all_stats[i]['duration'])/60  #change default seconds to minutes for display
 			except:
-				print(" error in duration0 value", sys.exc_info() )
+				#print(" error in duration0 value", sys.exc_info() )
 				duration_min0 = -1
 
 			try:
 				duration_min1 = (list_all_stats[1]['duration'])/60
 			except:
-				print(" error in duration1 value", sys.exc_info() )
+				#print(" error in duration1 value", sys.exc_info() )
 				duration_min1 = -1
-
 			try:
 				total_duration_min0 = (list_all_stats[i]['total_duration'])/60
 			except:
-				print(" error in  total_duration0", sys.exc_info())
+				#print(" error in  total_duration0", sys.exc_info())
 				total_duration_min0 = -1
 
 			try:
 				total_duration_min1 = (list_all_stats[1]['total_duration'])/60
 			except:
-				print(" error in  total_duration1", sys.exc_info())
+				#print(" error in  total_duration1", sys.exc_info())
 				total_duration_min1 = -1
 
 			#percent_uptime1 = (total_duration_min1)/(duration_min1)*100
@@ -159,10 +157,10 @@ while(1):
 		# set time calculations for the next iteration
 		time_increment_in_sec_Modem = datetime.datetime.now() - prev_time
 		time_increment_in_sec_Modem = time_increment_in_sec_Modem.seconds
-		print("time_increment_in_sec_Modem:", time_increment_in_sec_Modem)
+		#print("time_increment_in_sec_Modem:", time_increment_in_sec_Modem)
 
 		total_time_in_secs_script_running = total_time_in_secs_script_running + time_increment_in_sec_Modem
-		print("2 total_time  :", total_time_in_secs_script_running)
+		#print("2 total_time  :", total_time_in_secs_script_running)
 
 		prev_time = datetime.datetime.now()
 

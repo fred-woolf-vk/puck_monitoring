@@ -164,7 +164,6 @@ def get_modem_stats():
                         if list_bearer_IPv4_section[j].lower().find("method") != -1:
                             try:
                                 dict_all_modem_stats["method"]= list_bearer_IPv4_section[j].split()[-1:][0]
-                                print(" method")
                             except:
                                 print("error in data from mmcli: method")
 
@@ -176,7 +175,6 @@ def get_modem_stats():
 
                         if list_bearer_IPv4_section[j].lower().find("prefix") != -1:
                             try:
-                                print(" prefix")
                                 dict_all_modem_stats["prefix"]= list_bearer_IPv4_section[j].split()[-1:][0]
                             except:
                                 print("error in data from mmcli: prefix ")
@@ -259,8 +257,8 @@ def get_modem_stats():
                             except:
                                 print("error in data from mmcli: total_bytesTx")
 
-                    for key in dict_all_modem_stats:
-                        print("         ", key, ": ", dict_all_modem_stats[key])
+                    #for key in dict_all_modem_stats:
+                    #    print("         ", key, ": ", dict_all_modem_stats[key])
                     print()
 
                     list_dict_all_modem_stats.append(dict_all_modem_stats)
