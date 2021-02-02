@@ -130,7 +130,7 @@ while(1):
 						{
 						"measurement": "uptime",
 						"tags": {
-								"modemName": "Modem 0",
+								"modemName": current_modem,
 						"interfaceName": list_all_stats[i]['interface']
 						},
 					"time":datetime.datetime.now(tz=pytz.timezone('US/Eastern')),
@@ -151,7 +151,7 @@ while(1):
 					]
 			except:
 				print("\n Error!  Unable to write json_body\n", sys.exc_info())
-			print("\n", json_body)
+			#print("\n", json_body)
 			client.write_points(json_body)
 
 		# set time calculations for the next iteration
