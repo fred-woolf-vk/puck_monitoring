@@ -46,7 +46,7 @@ time.sleep(1)
 # this calculates the 'Availability' percentage
 def calculate_percentage_uptime(modem_num, stats_connected):
 	global total_time_in_secs_script_running, prev_time, time_increment_in_sec_Modem
-	
+
 	# if "connected" status in mmcli bearer is "yes" then add data collection interval to the total time available
 	#print("\n% 1 available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num], time_increment_in_sec_Modem)
 	#print(" connected  ", stats_connected)
@@ -54,8 +54,8 @@ def calculate_percentage_uptime(modem_num, stats_connected):
 		total_available_time_in_secs_modems[modem_num] = total_available_time_in_secs_modems[modem_num] + time_increment_in_sec_Modem
 
 		#print("num secs = ", total_time_in_secs_script_running, "num_min = ", total_time_in_secs_script_running / 60)
-	    #print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running)	
-	    #print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num])
+		#print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running)
+	    	#print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num])
 	else:
 		print("Warning: modem not connected")
 
@@ -125,6 +125,8 @@ while(1):
 
 			# json_body is the data sent to the influx db; list_all_stats[i] is Modem 0,
 			#  list_all_stats[1] is Modem 1
+			this_interface_name = "ping_time_avg_" +  list_all_stats[i]["interface"]
+
 			try:
 				json_body = [
 						{
@@ -145,7 +147,7 @@ while(1):
 						"total_bytes_rx": int(list_all_stats[i]['total_bytesRx']),
 						"bytes_tx": int(list_all_stats[i]['bytesTx']) ,
 						"total_bytes_tx": int(list_all_stats[i]['total_bytesTx']),
-						"ping_time_avg_wwan0": float(ping_time_wwan[i])
+						this_interface_name : float(ping_time_wwan[i])
 							}
 					}
 					]

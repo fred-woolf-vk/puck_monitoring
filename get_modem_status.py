@@ -30,6 +30,7 @@ def get_average_ping_time(interface, num_pings_to_average):
         #print("str: ", lines_with_search_string[0][0], lines_with_search_string[0][0].split("=")[-1:][0])
         line_pings = [float(x[0].split("=")[-1:][0]) for x in lines_with_search_string]
         #print(" lines str:",line_pings)
+        #print(" ping time i/f",interface, "= ", str(sum(line_pings)/len(line_pings))) 
         return sum(line_pings)/len(line_pings)
 
     else:
