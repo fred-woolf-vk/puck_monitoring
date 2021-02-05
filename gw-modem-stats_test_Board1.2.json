@@ -530,14 +530,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1048",
           "format": "short",
           "label": null,
           "logBase": 1,
-          "max": null,
+          "max": "100",
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:1049",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2414,5 +2416,5 @@
   "timezone": "",
   "title": "gw-modem-stats_test_Board1.2",
   "uid": "w9i5IEfGz",
-  "version": 19
+  "version": 20
 }
