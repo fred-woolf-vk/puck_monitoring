@@ -9,7 +9,7 @@
 import subprocess
 MODEM_IN_LINE = 4
 MODEM_NUMBER_IN_LINE = 5
-NY_SERVER_IP = "206.166.228.21"
+PING_SERVER_IP = "8.8.8.8"
 
 # set up python command to send shell commands with return data
 def send_cmd_to_gw_modemmgr(cmd):
@@ -19,11 +19,11 @@ def send_cmd_to_gw_modemmgr(cmd):
 # ping server using a specific modem interface
 # collect 5 ping samples and average them 
 def get_average_ping_time(interface, num_pings_to_average):
-    cmd = "sudo ping -I " + interface + " "  + NY_SERVER_IP + "  -c " + num_pings_to_average
+    cmd = "sudo ping -I " + interface + " "  + PING_SERVER_IP + "  -c " + num_pings_to_average
     output_string = (send_cmd_to_gw_modemmgr(cmd))
     #print(output_string)
 
-    search_string = "bytes from " + NY_SERVER_IP
+    search_string = "bytes from " + PING_SERVER_IP
     if search_string in output_string:
         lines = output_string.splitlines()
         lines_with_search_string = [x.split(" ")[-2:-1]  for x in lines  if search_string in x]
