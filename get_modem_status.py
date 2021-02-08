@@ -110,7 +110,7 @@ def get_modem_stats():
                     list_bearer_data = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
                     print("list_bearer_data: " , list_bearer_data)
                     if  "error" in list_bearer_data[0]:
-                        print(" Error in reading bearer data")
+                        #print(" Error in reading bearer data")
                         continue
 
                     #print(" bearer data: ", list_bearer_data)
