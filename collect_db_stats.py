@@ -14,6 +14,7 @@ from get_modem_status import *
 import sys
 import socket
 import pytz
+import pdb 
 
 # use current IP for database query
 current_ip_addr = socket.gethostbyname(socket.gethostname())

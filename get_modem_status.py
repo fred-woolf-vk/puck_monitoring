@@ -7,6 +7,7 @@
 #**************************************************************/
 
 import subprocess
+import pdb
 MODEM_IN_LINE = 4
 MODEM_NUMBER_IN_LINE = 5
 PING_SERVER_IP = "8.8.8.8"
@@ -54,7 +55,6 @@ def get_modem_stats():
         current_line_in_modem_list = list_modems[i].split('/')
         #print(" current_line ", current_line_in_modem_list)
         if "Modem" in current_line_in_modem_list[MODEM_IN_LINE] :
-
             current_modem_number = current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
             print("\n Modem #",current_modem_number , " ", list_modems[i].strip())
 
@@ -72,7 +72,6 @@ def get_modem_stats():
             Modes_section_index = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "Modes" in x][0][0]
 
             list_Status_section = lines_in_modem_display[Status_section_index:Modes_section_index]
-	
             # get current signal strength
             status = ""
             current_signal_strength = ""
@@ -103,12 +102,16 @@ def get_modem_stats():
 
             else:
                 print("    Success! Modem #", current_modem_number, " is ", status)
-                
+
                 if "Locked" in status:
                     # get bearer data 
                     cmd = "mmcli --bearer " + current_modem_number
                     output = send_cmd_to_gw_modemmgr(cmd)
                     list_bearer_data = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
+                    print("list_bearer_data: " , list_bearer_data)
+                    if  "error" in list_bearer_data[0]:
+                        print(" Error in reading bearer data")
+                        continue
 
                     #print(" bearer data: ", list_bearer_data)
                     Status_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Status" in x][0][0]
@@ -151,7 +154,7 @@ def get_modem_stats():
                             except:
                                 print("error in data from mmcli: ip_timeout")
 
-                    
+
                     # extract parameters from the IPv4 section
                     method = ""
                     address = ""
