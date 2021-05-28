@@ -45,8 +45,9 @@ def get_modem_stats():
     #print(output_list)
     list_modems = list((output_list).split("\n"))
     num_modems_found = len(list_modems)
-    print("\nFound ", num_modems_found, " modems")
+    print("Found ", num_modems_found, " modems")
     print("----------------------------------------------------------------------")
+    locked_status = "Not Locked"
 
     for i in range(num_modems_found):
         # dictionary which holds key:value pair for each modem parameter of interest
@@ -56,7 +57,9 @@ def get_modem_stats():
         #print(" current_line ", current_line_in_modem_list)
         if "Modem" in current_line_in_modem_list[MODEM_IN_LINE] :
             current_modem_number = current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
-            print("\n Modem #",current_modem_number , " ", list_modems[i].strip())
+            modem_id = list_modems[i].strip()
+            modem_id = modem_id.split("[")[0]
+            print("  Modem #",current_modem_number, modem_id, end='')
 
             # get modem status and verify lock state
             cmd = "mmcli -m " + current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
@@ -82,12 +85,12 @@ def get_modem_stats():
             # some elements may be missing or out of order so each line must be searched
             for i in range(len(list_Status_section)):
                 if list_Status_section[i].lower().find("lock") != -1:
-                    status = "Locked"
+
                     #print("sim: ", list_Status_section)
                     if list_Status_section[i].lower().find('sim-pin2') != -1: # sim-pin2 is displayed for lock
-                        status = status + " -- sim-pin2"
+                        locked_status = "Locked"      #locked_status = locked_status + " -- sim-pin2"
                     else:
-                        status = "status " + " -- NOT locked"
+                        locked_status = "Not Locked"   #locked_status = "status " + " -- NOT locked"
 
                 # print(" status = ", status)
 
@@ -101,9 +104,11 @@ def get_modem_stats():
                 print("       Reason: ", reason)
 
             else:
-                print("    Success! Modem #", current_modem_number, " is ", status)
+                print("    Modem #", current_modem_number, " is ", locked_status)
 
-                if "Locked" in status:
+                if locked_status == "Locked":
+                    dict_all_modem_stats["locked_status"] = 'yes'
+
                     # get bearer data 
                     cmd = "mmcli --bearer " + current_modem_number
                     output = send_cmd_to_gw_modemmgr(cmd)
@@ -112,11 +117,20 @@ def get_modem_stats():
                         print(" Error in reading bearer data")
                         continue
 
-                    #print(" bearer data: ", list_bearer_data)
-                    Status_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Status" in x][0][0]
-                    IPv4_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "IPv4 configuration" in x][0][0]
-                    IPv6_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "IPv6 configuration" in x][0][0]
-                    Statistics_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Statistics" in x][0][0]
+                    print(" bearer data: ", list_bearer_data)
+                    Status_section_index = 0
+                    IPv4_section_index = 0
+                    IPv6_section_index = 0
+                    Statistics_section_index = 0
+
+                    if len([x for x in list_bearer_data if "Status" in x]) > 0:
+                        Status_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Status" in x][0][0]
+                    if len([x for x in list_bearer_data if "IPv4" in x]) > 0:
+                        IPv4_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "IPv4" in x][0][0]
+                    if len([x for x in list_bearer_data if "IPv6" in x]) > 0:
+                        IPv6_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "IPv6" in x][0][0]
+                    if len([x for x in list_bearer_data if "Statistics" in x]) > 0:
+                        Statistics_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Statistics" in x][0][0]
 
                     # extract parameters from the Status section
                     list_bearer_Status_section = list_bearer_data[Status_section_index:IPv4_section_index]
@@ -126,8 +140,7 @@ def get_modem_stats():
                     ip_timeout = ""
 
                     # since elements and sections can be missing from the output, search for each
-                    # parameter in each line of the section 
-
+                    # parameter in each line of the section
                     for j in range(len(list_bearer_Status_section)):
                         if list_bearer_Status_section[j].lower().find("connected") != -1:
                             try:
@@ -161,6 +174,9 @@ def get_modem_stats():
                     gateway = ""
                     dns1 = ""
                     dns2 = ""
+
+                    if IPv6_section_index == 0:
+                        IPv6_section_index = len(list_bearer_data)
                     list_bearer_IPv4_section = list_bearer_data[IPv4_section_index:IPv6_section_index]
                     for j in range(len(list_bearer_IPv4_section)):
                         #print("j: ", j, list_bearer_IPv4_section[j])
@@ -216,7 +232,7 @@ def get_modem_stats():
                         if list_bearer_Statistics_section[j].lower().find("duration") != -1 and  \
                             list_bearer_Statistics_section[j].lower().find("total-duration") == -1:
                             try:
-                                print(" duration = ", int(list_bearer_Statistics_section[j].split()[-1:][0]))
+                                #print(" duration = ", int(list_bearer_Statistics_section[j].split()[-1:][0]))
                                 dict_all_modem_stats["duration"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
                             except:
                                 print("error in data from mmcli: duration")
@@ -243,7 +259,7 @@ def get_modem_stats():
 
                         if list_bearer_Statistics_section[j].lower().find("total-duration") != -1:
                             try:
-                                print(" total-duration = ", int(list_bearer_Statistics_section[j].split()[-1:][0]))
+                                #print(" total-duration = ", int(list_bearer_Statistics_section[j].split()[-1:][0]))
                                 dict_all_modem_stats["total_duration"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
                             except:
                                 print("error in data from mmcli: total_duration")
@@ -262,20 +278,19 @@ def get_modem_stats():
 
                     #for key in dict_all_modem_stats:
                     #    print("         ", key, ": ", dict_all_modem_stats[key])
-                    print()
 
                     list_dict_all_modem_stats.append(dict_all_modem_stats)
                     #print(list_dict_all_modem_stats)
 
-
                 else:
-                    print("   Error! in connecting modem.  Reason: ", output_list)
+                    dict_all_modem_stats["locked_status"] = 'no'
+                    print("   Error! Modem not locked;  Reason: ", output_list)
 
 
         else:
             print(" Error: Modem not found")
 
-    print(" completed stats collection")
+    #print(" completed stats collection")
     return list_dict_all_modem_stats
 
 
