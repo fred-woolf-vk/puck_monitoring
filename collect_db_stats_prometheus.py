@@ -112,29 +112,31 @@ while(1):
 
 			# some elements can be randomly missing in data updates from the modem; make sure any missing data returns -1
 			try:
-				duration_min0 = (list_all_stats[i]['duration'])/60  #change default seconds to minutes for display
+				duration_min = (int(list_all_stats[i]['duration']))/60  #change default seconds to minutes for display
 				#print("duration_min0 = ", duration_min0)
 			except:
 				print(" error in duration0 value", sys.exc_info() )
-				duration_min0 = -1
+				duration_min = -1
 
-			try:
-				duration_min1 = (list_all_stats[1]['duration'])/60
+			'''try:
+				duration_min1 = (int(list_all_stats[1]['duration']))/60
 				#print("duration_min1 = ", duration_min1)
 			except:
 				print(" error in duration1 value", sys.exc_info() )
 				duration_min1 = -1
+			'''
 			try:
-				total_duration_min0 = (list_all_stats[i]['total_duration'])/60
+				total_duration_min = (int(list_all_stats[i]['total_duration']))/60
 			except:
 				print(" error in  total_duration0", sys.exc_info())
-				total_duration_min0 = -1
-
+				total_duration_min = -1
+			'''
 			try:
-				total_duration_min1 = (list_all_stats[1]['total_duration'])/60
+				total_duration_min = (int(list_all_stats[1]['total_duration']))/60
 			except:
 				print(" error in  total_duration1", sys.exc_info())
 				total_duration_min1 = -1
+			'''
 
 			#percent_uptime1 = (total_duration_min1)/(duration_min1)*100
 			#percent_uptime0 = (total_duration_min0)/(duration_min0)*100
@@ -161,33 +163,34 @@ while(1):
 
 			try:
 				i_remote_server_ip.info({'remote_server':remote_server_ip_address})
+				#pdb.set_trace()
 				if i == 0:  # modem 1
 					g_signal_strength1.set(int(list_all_stats[i]['current_signal_strength'][:2]))
-					g_duration1.set(float(duration_min0)) # up time in minutes
-					s_bytes_tx1.observe(list_all_stats[i]['bytesTx'])
-					s_bytes_rx1.observe(list_all_stats[i]['bytesRx'])
-					s_total_bytes_tx1.observe(list_all_stats[i]['total_bytesTx'])
-					s_total_bytes_rx1.observe(list_all_stats[i]['total_bytesRx'])
+					g_duration1.set(float(duration_min)) # up time in minutes
+					s_bytes_tx1.observe(float(list_all_stats[i]['bytesTx']))
+					s_bytes_rx1.observe(float(list_all_stats[i]['bytesRx']))
+					s_total_bytes_tx1.observe(float(list_all_stats[i]['total_bytesTx']))
+					s_total_bytes_rx1.observe(float(list_all_stats[i]['total_bytesRx']))
 					i_modem_info1.info({'ip_addr':list_all_stats[i]['ipaddr'], "modem":"Modem 1", "interface":"wan0"})
 
 					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
-					g_duration1.set(duration_min0)
-					g_total_duration1.set(total_duration_min0)
+					g_duration1.set(duration_min)
+					g_total_duration1.set(total_duration_min)
 					g_ping_time_to_server1.set(ping_time_wwan[i])
 
 				else:   # modem 2
 					g_signal_strength2.set(int(list_all_stats[i]['current_signal_strength'][:2]))
-					g_duration2.set(float(duration_min1)) # up time in minutes
-					s_bytes_tx2.observe(list_all_stats[i]['bytesTx'])
-					s_bytes_rx2.observe(list_all_stats[i]['bytesRx'])
-					s_total_bytes_tx2.observe(list_all_stats[i]['total_bytesTx'])
-					s_total_bytes_rx2.observe(list_all_stats[i]['total_bytesRx'])
+					g_duration2.set(float(duration_min)) # up time in minutes
+					s_bytes_tx2.observe(float(list_all_stats[i]['bytesTx']))
+					s_bytes_rx2.observe(float(list_all_stats[i]['bytesRx']))
+					s_total_bytes_tx2.observe(float(list_all_stats[i]['total_bytesTx']))
+					s_total_bytes_rx2.observe(float(list_all_stats[i]['total_bytesRx']))
 					i_modem_info2.info({'ip_addr':list_all_stats[i]['ipaddr'],  "modem":"Modem 2", "interface":"wan1"})
 					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
-					g_duration2.set(duration_min1)
-					g_total_duration2.set(total_duration_min1)
+					g_duration2.set(duration_min)
+					g_total_duration2.set(total_duration_min)
 					g_ping_time_to_server2.set(ping_time_wwan[i])
 
 			except:

@@ -8,14 +8,76 @@
 
 import subprocess
 import pdb
+import sys
 MODEM_IN_LINE = 4
 MODEM_NUMBER_IN_LINE = 5
 PING_SERVER_IP = "8.8.8.8"
+locked_status = "Not Locked"
+connected_status = "Not Connected"
 
 # set up python command to send shell commands with return data
 def send_cmd_to_gw_modemmgr(cmd):
     stdoutdata = subprocess.getoutput(cmd)
     return stdoutdata
+
+def parse_data_section(list_output):
+    list_of_all_section_data = []
+    #print(" list output modem status ", list_output)
+    lines_in_modem_display = [x for x in list_output]
+    #lines_in_modem_display.append(" ")  # create extra line for parsing
+
+    pass
+    # identify all section boundaries by ----------------------
+    # list_start_of_section_by_row_num is a list of row numbers; points to the first row of each section, after the ------ separator
+    try:
+        list_start_of_section_by_row_num = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "----" in x]
+        list_start_of_section_by_row_num = [x[0] for x in list_start_of_section_by_row_num]
+        last_item = list_start_of_section_by_row_num[len(list_start_of_section_by_row_num) -1]
+
+        list_start_of_section_by_row_num.append(len(lines_in_modem_display)) # create dummy start of last section for parsing
+
+        # get list of each section data as list
+        # list[each section[data for each section, one line per list element]]
+        len_list_start_of_section_by_row_num = len(list_start_of_section_by_row_num)
+        for j in range(len(list_start_of_section_by_row_num) - 1):
+            list_of_all_section_data.append(
+                lines_in_modem_display[list_start_of_section_by_row_num[j] + 1:list_start_of_section_by_row_num[j+1]])
+        #print(lines_in_modem_display)
+    except:
+        print(" error in parse_data_section, get list of each section data as list", "\n", sys.exc_info())
+
+    try:
+        # get each element in data section from list_of_all_section_data and place in dictionary
+        dict_all_data_elements = {}
+        for j in range(len(list_of_all_section_data)):
+            if len(list_of_all_section_data[j]) > 0 and '|' in list_of_all_section_data[j][0]:
+                dict_data_elements_this_section = {}
+                section_name = list_of_all_section_data[j][0].strip().split('|')[0].strip()
+                # dict_data_elements_this_section['section_name'] = section_name
+
+                element = ''
+                element_index = 0
+                pdb.set_trace()
+                for k in range(len(list_of_all_section_data[j])):
+                    # element will have this type data: 'manufacturer: QUALCOMM INCORPORATED'
+                    # if there is no element name, such as happens in System section, repeat the element name
+                    if len(list_of_all_section_data[j]) > k and ':' in list_of_all_section_data[j][k]:
+                        element = list_of_all_section_data[j][k].strip().split('|')[1].strip()
+                        pdb.set_trace()
+                        dict_data_elements_this_section[element.split(':')[0]] = element.split(':')[1].strip()
+                        element_index = 0
+                    else:
+                        dict_data_elements_this_section[element.split(':')[0].strip() + str(element_index + 1)] = \
+                            list_of_all_section_data[j][k].strip().split('|')[1].strip()
+
+                dict_all_data_elements[section_name] = dict_data_elements_this_section
+
+        return dict_all_data_elements
+
+
+    except:
+        print(" error in parse_data_section, et each element in data section", "\n", sys.exc_info())
+
 
 # ping server using a specific modem interface
 # collect 5 ping samples and average them 
@@ -37,260 +99,257 @@ def get_average_ping_time(interface, num_pings_to_average):
     else:
         return -1
 
-# for the mmcli commands, extract the parameters for storage in the influx db 
+# for the mmcli commands, extract the parameters for storage
+def parse_data_section(list_output):
+    list_of_all_section_data = []
+    # print(" list output modem status ", list_output)
+    lines_in_modem_display = [x for x in list_output]
+    # lines_in_modem_display.append(" ")  # create extra line for parsing
+
+    pass
+    # identify all section boundaries by ----------------------
+    # list_start_of_section_by_row_num is a list of row numbers; points to the first row of each section, after the ------ separator
+    try:
+        list_start_of_section_by_row_num = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "----" in x]
+        list_start_of_section_by_row_num = [x[0] for x in list_start_of_section_by_row_num]
+        last_item = list_start_of_section_by_row_num[len(list_start_of_section_by_row_num) - 1]
+
+        list_start_of_section_by_row_num.append(
+            len(lines_in_modem_display))  # create dummy start of last section for parsing
+
+        # get list of each section data as list
+        # list[each section[data for each section, one line per list element]]
+        len_list_start_of_section_by_row_num = len(list_start_of_section_by_row_num)
+        for j in range(len(list_start_of_section_by_row_num) - 1):
+            list_of_all_section_data.append(
+                lines_in_modem_display[list_start_of_section_by_row_num[j] + 1:list_start_of_section_by_row_num[j + 1]])
+        # print(lines_in_modem_display)
+    except:
+        print(" error in parse_data_section, get list of each section data as list", "\n", sys.exc_info())
+
+    try:
+        # get each element in data section from list_of_all_section_data and place in dictionary
+        dict_all_data_elements = {}
+        for j in range(len(list_of_all_section_data)):
+            if len(list_of_all_section_data[j]) > 0 and '|' in list_of_all_section_data[j][0]:
+                dict_data_elements_this_section = {}
+                section_name = list_of_all_section_data[j][0].strip().split('|')[0].strip()
+                # dict_data_elements_this_section['section_name'] = section_name
+
+                element = ''
+                element_index = 0
+                for k in range(len(list_of_all_section_data[j])):
+                    # element will have thislen(list_of_all_section_data[j]) type data: 'manufacturer: QUALCOMM INCORPORATED'
+                    # if there is no element name, such as happens in System section, repeat the element name
+                    if len(list_of_all_section_data[j]) > k and ':' in list_of_all_section_data[j][k]:
+                        element = list_of_all_section_data[j][k].strip().split('|')[1].strip()
+                        dict_data_elements_this_section[element.split(':')[0].strip()] = element.split(':')[1].strip()
+                        element_index = 0
+                    else:
+                        dict_data_elements_this_section[element.split(':')[0].strip() + str(element_index + 1)] = \
+                            list_of_all_section_data[j][k].strip().split('|')[1].strip()
+
+                dict_all_data_elements[section_name] = dict_data_elements_this_section
+
+        return dict_all_data_elements
+
+
+    except:
+        print(" error in parse_data_section, et each element in data section", "\n", sys.exc_info())
+
+
 def get_modem_stats():
-    list_dict_all_modem_stats  = []
+    global locked_status, connected_status
+    list_dict_all_modem_stats = []
+    dict_bearer_info = {}
+    dict_modem_info = {}
+    list_output_modem_info = []
+    list_output_bearer_info = []
+    # print(output_list)
+    num_modems_found = 0
+
     cmd = "mmcli --list-modems"
     output_list = (send_cmd_to_gw_modemmgr(cmd))
-    #print(output_list)
+    print(output_list)
     list_modems = list((output_list).split("\n"))
-    num_modems_found = len(list_modems)
+
+    for modem_list in range(0, len(list_modems)):
+        if list_modems[modem_list] != '':
+            num_modems_found = num_modems_found + 1
+
     print("Found ", num_modems_found, " modems")
     print("----------------------------------------------------------------------")
-    locked_status = "Not Locked"
+    locked_status = "no"
 
-    for i in range(num_modems_found):
+    for modem_number in range(num_modems_found):
         # dictionary which holds key:value pair for each modem parameter of interest
         # one dictionary for each Modem will be appended to the list_dict_all_modem_stats
-        dict_all_modem_stats = {}  
-        current_line_in_modem_list = list_modems[i].split('/')
-        #print(" current_line ", current_line_in_modem_list)
-        if "Modem" in current_line_in_modem_list[MODEM_IN_LINE] :
-            current_modem_number = current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
-            modem_id = list_modems[i].strip()
-            modem_id = modem_id.split("[")[0]
-            print("  Modem #",current_modem_number, modem_id, end='')
+        dict_all_modem_stats = {}
+        current_line_in_modem_list = list_modems[modem_number].split('/')
+        # print(" current_line ", current_line_in_modem_list)
 
-            # get modem status and verify lock state
-            cmd = "mmcli -m " + current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
-            list_output_modem_status = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
-            #print(" list output modem status ", list_output_modem_status)
-            lines_in_modem_display = [x for x in list_output_modem_status]
-            #print(" lines in modem status ", lines_in_modem_status)
+        # get all mmcli data elements
+        try:
+            if "Modem" in current_line_in_modem_list[MODEM_IN_LINE]:
+                current_modem_number = current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
+                modem_id = list_modems[modem_number].strip()
+                modem_id = modem_id.split("[")[0]
+                # print("  Modem #",current_modem_number, modem_id, end='')
 
-            status = ""
-            reason = ""
-            # find Status section
-            Status_section_index = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "Status" in x][0][0]
-            Modes_section_index = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "Modes" in x][0][0]
+                cmd = "mmcli -m " + current_line_in_modem_list[MODEM_NUMBER_IN_LINE][0]
+                list_output_modem_info = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
+                print(" list output modem status ", list_output_modem_info)
 
-            list_Status_section = lines_in_modem_display[Status_section_index:Modes_section_index]
-            # get current signal strength
-            status = ""
-            current_signal_strength = ""
-            if 'recent' in list_Status_section[5]:
-                current_signal_strength = list_Status_section[5].split()[-2:-1][0]
+                if "error" in list_output_modem_info[0]:
+                    print(" Error in reading modem data for Modem ", modem_number)
+                    continue
 
-            dict_all_modem_stats['current_signal_strength'] = current_signal_strength
-            # some elements may be missing or out of order so each line must be searched
-            for i in range(len(list_Status_section)):
-                if list_Status_section[i].lower().find("lock") != -1:
+                # get dictionary of each section data as a dictionary  of elements
+                # dict{each section{dict for each section, one dict element for each paramName:value pair}
+                dict_modem_info = parse_data_section(list_output_modem_info)
+                # print(dict_modem_info)
 
-                    #print("sim: ", list_Status_section)
-                    if list_Status_section[i].lower().find('sim-pin2') != -1: # sim-pin2 is displayed for lock
-                        locked_status = "Locked"      #locked_status = locked_status + " -- sim-pin2"
+                # get bearer data
+                cmd = "mmcli --bearer " + current_modem_number
+                list_output_bearer_info = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
+                if "error" in list_output_bearer_info[0]:
+                    print(" Error in reading bearer data for Modem ", modem_number)
+                    continue
+
+                dict_bearer_info = parse_data_section(list_output_bearer_info)
+                # print(dict_bearer_info)
+                # print("  bearer data for Modem ", modem_number, ":\n",  list_output_bearer_info)
+
+        except:
+            print(" error in getting modem data for Modem ", modem_number, "\n", sys.exc_info())
+
+        try:
+            # get keys from dictionary to develop list of all param data available
+            modem_info_sections = list(dict_modem_info.keys())
+
+            if "Status" in modem_info_sections:
+                list_modem_info_Status_section_params = list(dict_modem_info["Status"].keys())
+                if "lock" in list_modem_info_Status_section_params:
+                    if 'sim-pin2' in dict_modem_info["Status"]["lock"]:
+                        locked_status = "yes"  # locked_status = locked_status + " -- sim-pin2"
                     else:
-                        locked_status = "Not Locked"   #locked_status = "status " + " -- NOT locked"
+                        locked_status = "no"  # locked_status = "status " + " -- NOT locked"
+                else:
+                    print(" Error! no lock status available")
 
-                # print(" status = ", status)
+                dict_all_modem_stats["locked_status"] = locked_status
+                if "signal quality" in list_modem_info_Status_section_params:
+                    signal_strength = dict_modem_info["Status"]["signal quality"].strip().split('%')[0]
+                    dict_all_modem_stats["current_signal_strength"] = signal_strength
 
-            # if there is an error in the modem connecting, a reason may be stated here
-            if list_Status_section[i].find('reason') != -1:
-                list_reason = list(list_Status_section[i].split()[-1:])
-                reason = list_reason[0]
-                status = "failed"
+        except:
+            print(" Error in getting lock status; no entry in table for modem data - [Status][lock]")
 
-                print("    Error!: modem #", current_modem_number, " is in Failed state")
-                print("       Reason: ", reason)
+        try:
+            # get keys from dictionary to develop list of all param data available
+            modem_bearer_sections = list(dict_bearer_info.keys())
+            if "Status" in modem_bearer_sections:
+                list_modem_bearer_Status_section_params = list(dict_bearer_info["Status"].keys())
+
+                if "connected" in list_modem_bearer_Status_section_params:
+                    connected_status = dict_bearer_info["Status"]["connected"]
+
+                if "yes" not in connected_status:
+                    connected_status = "no"
+                    print(" Error! Modem ", modem_number, " is not connected")
+                    if "failed reason" in list_modem_bearer_Status_section_params:
+                        print("    Reason: ", dict_bearer_info["Status"]["failed reason"])
+
+                dict_all_modem_stats["connected"] = connected_status
 
             else:
-                print("    Modem #", current_modem_number, " is ", locked_status)
+                print(" Error!  Unable to find Status section in modem_bearer_sections")
+        except:
+            print(" Error in getting connected status; no entry in table for modem data - [Status][connected]")
 
-                if locked_status == "Locked":
-                    dict_all_modem_stats["locked_status"] = 'yes'
+        try:
+            # bearer data of interest - Status section
+            # get keys from dictionary to develop list of all param data available
+            list_modem_bearer_sections = list(dict_bearer_info.keys())
+            if "Status" in list_modem_bearer_sections:
+                dict_all_modem_stats["suspended"] = ''
+                dict_all_modem_stats["interface"] = ''
+                dict_all_modem_stats["ip_timeout"] ='0'
 
-                    # get bearer data 
-                    cmd = "mmcli --bearer " + current_modem_number
-                    output = send_cmd_to_gw_modemmgr(cmd)
-                    list_bearer_data = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
-                    if  "error" in list_bearer_data[0]:
-                        print(" Error in reading bearer data")
-                        continue
+                list_modem_bearer_Status_section_params = list(dict_bearer_info["Status"].keys())
+                if "suspended" in list_modem_bearer_Status_section_params:
+                    dict_all_modem_stats["suspended"] = dict_bearer_info["Status"]["suspended"]
+                if "interface" in list_modem_bearer_Status_section_params:
+                    dict_all_modem_stats["interface"] = dict_bearer_info["Status"]["interface"]
+                if "ip timeout" in list_modem_bearer_Status_section_params:
+                    dict_all_modem_stats["ip_timeout"] = dict_bearer_info["Status"]["ip timeout"]
 
-                    print(" bearer data: ", list_bearer_data)
-                    Status_section_index = 0
-                    IPv4_section_index = 0
-                    IPv6_section_index = 0
-                    Statistics_section_index = 0
+            else:
+                print(" Error! No Status section in modem_bearer_info")
 
-                    if len([x for x in list_bearer_data if "Status" in x]) > 0:
-                        Status_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Status" in x][0][0]
-                    if len([x for x in list_bearer_data if "IPv4" in x]) > 0:
-                        IPv4_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "IPv4" in x][0][0]
-                    if len([x for x in list_bearer_data if "IPv6" in x]) > 0:
-                        IPv6_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "IPv6" in x][0][0]
-                    if len([x for x in list_bearer_data if "Statistics" in x]) > 0:
-                        Statistics_section_index = [[ind, x] for ind, x in enumerate(list_bearer_data) if "Statistics" in x][0][0]
+            # bearer data of interest - IPv4 section
+            if "IPv4 configuration" in list_modem_bearer_sections:
+                list_modem_bearer_IPv4_section_params = list(dict_bearer_info["IPv4 configuration"].keys())
+                dict_all_modem_stats["method"] = ''
+                dict_all_modem_stats["ipaddr"] = ''
+                dict_all_modem_stats["prefix"] = ''
+                dict_all_modem_stats["gateway"] = ''
+                dict_all_modem_stats["dns"] = ''
 
-                    # extract parameters from the Status section
-                    list_bearer_Status_section = list_bearer_data[Status_section_index:IPv4_section_index]
-                    connected = ""
-                    suspended = ""
-                    interface = ""
-                    ip_timeout = ""
+                if "method" in list_modem_bearer_IPv4_section_params:
+                    dict_all_modem_stats["method"] = dict_bearer_info["IPv4 configuration"]["method"]
+                if "address" in list_modem_bearer_IPv4_section_params:
+                    dict_all_modem_stats["ipaddr"] = dict_bearer_info["IPv4 configuration"]["address"]
+                if "prefix" in list_modem_bearer_IPv4_section_params:
+                    dict_all_modem_stats["prefix"] = dict_bearer_info["IPv4 configuration"]["prefix"]
+                if "gateway" in list_modem_bearer_IPv4_section_params:
+                    dict_all_modem_stats["gateway"] = dict_bearer_info["IPv4 configuration"]["gateway"]
+                if "dns" in list_modem_bearer_IPv4_section_params:
+                    dict_all_modem_stats["dns"] = dict_bearer_info["IPv4 configuration"]["dns"]
 
-                    # since elements and sections can be missing from the output, search for each
-                    # parameter in each line of the section
-                    for j in range(len(list_bearer_Status_section)):
-                        if list_bearer_Status_section[j].lower().find("connected") != -1:
-                            try:
-                                dict_all_modem_stats["connected"]= list_bearer_Status_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: connected")
+            else:
+                print(" Error! No IPv4 section in modem_bearer_info")
 
-                        if list_bearer_Status_section[j].lower().find("suspended") != -1:
-                            try:
-                                dict_all_modem_stats["suspended "]= list_bearer_Status_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: suspended ")
+            # bearer data of interest - Statistics section
+            if "Statistics" in list_modem_bearer_sections:
+                list_modem_bearer_Statistics_section_params = list(dict_bearer_info["Statistics"].keys())
+                dict_all_modem_stats["duration"] = '0'
+                dict_all_modem_stats["bytesRx"] = '0'
+                dict_all_modem_stats["bytesTx"] = '0'
+                dict_all_modem_stats["attempts"] = '0'
+                dict_all_modem_stats["total_duration"] = '0'
+                dict_all_modem_stats["total_bytesRx"] = '0'
+                dict_all_modem_stats["total_bytesTx"] = '0'
 
-                        if list_bearer_Status_section[j].lower().find("interface") != -1:
-                            try:
-                                dict_all_modem_stats["interface"]= list_bearer_Status_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: interface")
+                if "duration" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["duration"] = dict_bearer_info["Statistics"]["duration"]
+                if "bytes rx" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["bytesRx"] = dict_bearer_info["Statistics"]["bytes rx"]
+                if "bytes tx" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["bytesTx"] = dict_bearer_info["Statistics"]["bytes tx"]
+                if "attempts" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["attempts"] = dict_bearer_info["Statistics"]["attempts"]
+                if "total-duration" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["total_duration"] = dict_bearer_info["Statistics"]["total-duration"]
+                if "total-bytes rx" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["total_bytesRx"] = dict_bearer_info["Statistics"]["total-bytes rx"]
+                if "total-bytes tx" in list_modem_bearer_Statistics_section_params:
+                    dict_all_modem_stats["total_bytesTx"] = dict_bearer_info["Statistics"]["total-bytes tx"]
 
-                        if list_bearer_Status_section[j].lower().find("ip_timeout") != -1:
-                            try:
-                                dict_all_modem_stats["ip_timeout"]= list_bearer_Status_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: ip_timeout")
-
-
-                    # extract parameters from the IPv4 section
-                    method = ""
-                    address = ""
-                    prefix = ""
-                    gateway = ""
-                    dns1 = ""
-                    dns2 = ""
-
-                    if IPv6_section_index == 0:
-                        IPv6_section_index = len(list_bearer_data)
-                    list_bearer_IPv4_section = list_bearer_data[IPv4_section_index:IPv6_section_index]
-                    for j in range(len(list_bearer_IPv4_section)):
-                        #print("j: ", j, list_bearer_IPv4_section[j])
-                        if list_bearer_IPv4_section[j].lower().find("method") != -1:
-                            try:
-                                dict_all_modem_stats["method"]= list_bearer_IPv4_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: method")
-
-                        if list_bearer_IPv4_section[j].lower().find("address") != -1:
-                            try:
-                                dict_all_modem_stats["ipaddr"]= list_bearer_IPv4_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: addresss")
-
-                        if list_bearer_IPv4_section[j].lower().find("prefix") != -1:
-                            try:
-                                dict_all_modem_stats["prefix"]= list_bearer_IPv4_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: prefix ")
-
-                        if list_bearer_IPv4_section[j].lower().find("gateway") != -1:
-                            try:
-                                dict_all_modem_stats["gateway"]= list_bearer_IPv4_section[j].split()[-1:][0]
-                            except:
-                                print("error in data from mmcli: gateway ")
-
-                        if list_bearer_IPv4_section[j].lower().find("dns1") != -1:
-                            try:
-                                dict_all_modem_stats["dns1 "]= int(list_bearer_IPv4_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: dns1")
-
-                        if list_bearer_IPv4_section[j].lower().find("dns2") != -1:
-                            try:
-                                dict_all_modem_stats["dns2"]= int(list_bearer_IPv4_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: dns2 ")
-
-                    # extract parameters from the Statistics section
-                    duration = ""
-                    bytesRx = ""
-                    bytesTx = ""
-                    attempts = ""
-                    total_duration = ""
-                    total_bytesRx = ""
-                    total_bytesTx = ""
-                    list_bearer_Statistics_section = list_bearer_data[Statistics_section_index:]
-                    #print(" Statistics: ", list_bearer_Statistics_section)
-                    for j in range(len(list_bearer_Statistics_section)):
-                        #print("l = ", list_bearer_Statistics_section[j])
-                        # extra check to distinguish total-duration and duration
-                        if list_bearer_Statistics_section[j].lower().find("duration") != -1 and  \
-                            list_bearer_Statistics_section[j].lower().find("total-duration") == -1:
-                            try:
-                                #print(" duration = ", int(list_bearer_Statistics_section[j].split()[-1:][0]))
-                                dict_all_modem_stats["duration"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: duration")
-
-                        if list_bearer_Statistics_section[j].lower().find("bytes rx") != -1 and \
-                           list_bearer_Statistics_section[j].lower().find("total-bytes rx") == -1:
-                            try:
-                                dict_all_modem_stats["bytesRx"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: bytesRx ")
-
-                        if list_bearer_Statistics_section[j].lower().find("bytes tx") != -1 and \
-                            list_bearer_Statistics_section[j].lower().find("total-bytes tx") == -1:
-                            try:
-                                dict_all_modem_stats["bytesTx"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: bytesTx ")
-
-                        if list_bearer_Statistics_section[j].lower().find("attempts") != -1:
-                            try:
-                                dict_all_modem_stats["attempts"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: attempts ")
-
-                        if list_bearer_Statistics_section[j].lower().find("total-duration") != -1:
-                            try:
-                                #print(" total-duration = ", int(list_bearer_Statistics_section[j].split()[-1:][0]))
-                                dict_all_modem_stats["total_duration"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: total_duration")
-
-                        if list_bearer_Statistics_section[j].lower().find("total-bytes rx") != -1:
-                            try:
-                                dict_all_modem_stats["total_bytesRx"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: total_bytesRx")
-
-                        if list_bearer_Statistics_section[j].lower().find("total-bytes tx") != -1:
-                            try:
-                                dict_all_modem_stats["total_bytesTx"] = int(list_bearer_Statistics_section[j].split()[-1:][0])
-                            except:
-                                print("error in data from mmcli: total_bytesTx")
-
-                    #for key in dict_all_modem_stats:
-                    #    print("         ", key, ": ", dict_all_modem_stats[key])
-
-                    list_dict_all_modem_stats.append(dict_all_modem_stats)
-                    #print(list_dict_all_modem_stats)
-
-                else:
-                    dict_all_modem_stats["locked_status"] = 'no'
-                    print("   Error! Modem not locked;  Reason: ", output_list)
+            else:
+                print("  Error! No Statistics section in modem_bearer_info")
 
 
-        else:
-            print(" Error: Modem not found")
+        except:
+            print(" Error! Could not get bearer data ")
 
-    #print(" completed stats collection")
+        for key in dict_all_modem_stats:
+            print("         ", key, ": ", dict_all_modem_stats[key])
+
+        list_dict_all_modem_stats.append(dict_all_modem_stats)
+        # print(list_dict_all_modem_stats)
+
+
     return list_dict_all_modem_stats
 
 
