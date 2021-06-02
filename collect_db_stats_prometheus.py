@@ -171,7 +171,8 @@ while(1):
 					s_bytes_rx1.observe(float(list_all_stats[i]['bytesRx']))
 					s_total_bytes_tx1.observe(float(list_all_stats[i]['total_bytesTx']))
 					s_total_bytes_rx1.observe(float(list_all_stats[i]['total_bytesRx']))
-					i_modem_info1.info({'ip_addr':list_all_stats[i]['ipaddr'], "modem":"Modem 1", "interface":"wan0"})
+					i_modem_info1.info({'ip_addr':list_all_stats[i]['ipaddr'], "modem":"Modem 1", "interface":"wan0",
+										"Operator":list_all_stats[i]['operator_name']})
 
 					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
@@ -186,7 +187,8 @@ while(1):
 					s_bytes_rx2.observe(float(list_all_stats[i]['bytesRx']))
 					s_total_bytes_tx2.observe(float(list_all_stats[i]['total_bytesTx']))
 					s_total_bytes_rx2.observe(float(list_all_stats[i]['total_bytesRx']))
-					i_modem_info2.info({'ip_addr':list_all_stats[i]['ipaddr'],  "modem":"Modem 2", "interface":"wan1"})
+					i_modem_info2.info({'ip_addr':list_all_stats[i]['ipaddr'],  "modem":"Modem 2", "interface":"wan1",
+										"Operator":list_all_stats[i]['operator_name']})
 					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
 					g_duration2.set(duration_min)

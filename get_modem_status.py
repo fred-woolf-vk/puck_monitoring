@@ -214,11 +214,11 @@ def get_modem_stats():
                 list_output_bearer_info = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
                 if "error" in list_output_bearer_info[0]:
                     print(" Error in reading bearer data for Modem ", modem_number)
-                    continue
+                    
 
                 dict_bearer_info = parse_data_section(list_output_bearer_info)
-                # print(dict_bearer_info)
-                # print("  bearer data for Modem ", modem_number, ":\n",  list_output_bearer_info)
+                print("  bearer data for Modem ", modem_number, ":\n",  list_output_bearer_info)
+                print(dict_bearer_info)
 
         except:
             print(" error in getting modem data for Modem ", modem_number, "\n", sys.exc_info())
@@ -241,6 +241,12 @@ def get_modem_stats():
                 if "signal quality" in list_modem_info_Status_section_params:
                     signal_strength = dict_modem_info["Status"]["signal quality"].strip().split('%')[0]
                     dict_all_modem_stats["current_signal_strength"] = signal_strength
+
+                if "3GPP" in modem_info_sections:
+                    list_modem_info_Statistics_section_params = list(dict_modem_info["3GPP"].keys())
+                    if "operator name" in list_modem_info_Statistics_section_params:
+                        dict_all_modem_stats["operator_name"] = dict_modem_info["3GPP"]["operator name"].strip()
+
 
         except:
             print(" Error in getting lock status; no entry in table for modem data - [Status][lock]")
