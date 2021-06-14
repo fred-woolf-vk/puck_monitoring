@@ -1,10 +1,10 @@
 import os
-import pdb
 
 def get_mount_point(pathname):
     "Get the mount point of the filesystem containing pathname"
     pathname= os.path.normcase(os.path.realpath(pathname))
     parent_device= path_device= os.stat(pathname).st_dev
+    mount_point = ''
     while parent_device == path_device:
         mount_point= pathname
         pathname= os.path.dirname(pathname)
@@ -49,7 +49,6 @@ def get_storage_string():
     storage_path ="/mnt/microsd"
 
     # check to see if microsd dir is available
-    pdb.set_trace()
     for dir in os.listdir('/mnt'):
         if 'microsd' in dir and get_mount_point(storage_path) == storage_path:
             print(" mount point ", get_mount_point(storage_path), " for device ",
