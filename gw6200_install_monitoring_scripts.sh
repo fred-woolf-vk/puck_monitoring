@@ -16,7 +16,16 @@ echo "--------------------------------------------------------------------------
 mkdir -p /home/user/gw6200_scripts
 chmod 755 /home/user/gw6200_scripts
 cd /home/user/gw6200_scripts
+# if dir already has these files then delete
 rm -f *.1
+rm -f collect_db_stats_prometheus.py
+rm -f get_modem_status.py
+rm -f prometheus.yml
+rm -f gw6200_exporter.service
+rm -f gw6200_exporter_params.txt
+rm -f gw6200_monitoring_script.sh
+rm -f update_monitoring_scripts_from_repo.sh
+rm -f configure_prometheus.py
 
 echo "--------------------------------------------------------------------------------"
 wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/collect_db_stats_prometheus.py
