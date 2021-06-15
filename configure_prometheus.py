@@ -1,4 +1,20 @@
 import os
+import subprocess
+
+def send_cmd_to_gw_modemmgr(cmd):
+    stdoutdata = subprocess.getoutput(cmd)
+    return stdoutdata
+
+def is_sd_card_mounted():
+    path = "/mnt/microsd"
+    cmd = 'mount'
+    mount_point_found = False
+    output_list = list((send_cmd_to_gw_modemmgr(cmd)).splitlines())
+    for i in output_list:
+        if path in i:
+            mount_point_found = True
+
+    return mount_point_found
 
 def get_mount_point(pathname):
     "Get the mount point of the filesystem containing pathname"
@@ -14,7 +30,6 @@ def get_mount_point(pathname):
     return mount_point
 
 def get_mounted_device(pathname):
-    print("Get the device mounted at pathname")
     # uses "/proc/mounts"
     pathname= os.path.normcase(pathname) #
     try:
@@ -47,14 +62,15 @@ def get_storage_string():
     megabyte = 1024 * 1024
     megabytes_per_day_storage_required = 75000000
     storage_path ="/mnt/microsd"
+    storage_dir = 'microsd'
 
     # check to see if microsd dir is available
     for dir in os.listdir('/mnt'):
-        if 'microsd' in dir and get_mount_point(storage_path) == storage_path:
-            print(" mount point ", get_mount_point(storage_path), " for device ",
+        if storage_dir in dir and is_sd_card_mounted():
+            print(" SD micro card mount point ", get_mount_point(storage_path), "  found for device ",
                   get_mounted_device(storage_path))
             freespace = get_fs_freespace(storage_path)
-            print("SD micro card freespace: ", freespace)
+            print("  SD micro card freespace: ", freespace)
             max_bytes_storage = 0
             str_storage_path = ''
             days = 0
