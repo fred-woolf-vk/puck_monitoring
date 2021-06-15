@@ -25,14 +25,14 @@ rm -f update_monitoring_scripts_from_repo.sh
 rm -f configure_prometheus.py
 
 echo "--------------------------------------------------------------------------------"
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/collect_db_stats_prometheus.py
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/get_modem_status.py
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/prometheus.yml
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_exporter.service
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_exporter_params.txt
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_monitoring_script.sh
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/update_monitoring_scripts_from_repo.sh
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/configure_prometheus.py
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/collect_db_stats_prometheus.py
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/get_modem_status.py
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/prometheus.yml
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_exporter.service
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_exporter_params.txt
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_monitoring_script.sh
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/update_monitoring_scripts_from_repo.sh
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/configure_prometheus.py
 echo "--------------------------------------------------------------------------------"
 
 chmod 755 gw6200_monitoring_script.sh
