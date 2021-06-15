@@ -7,6 +7,7 @@ apt-get install python3-pip -y
 echo "--------------------------------------------------------------------------------"
 
 apt-get install prometheus -y
+pip3 install prometheus-client
 echo "--------------------------------------------------------------------------------"
 apt-get install prometheus-node-exporter -y
 echo "--------------------------------------------------------------------------------"
