@@ -42,14 +42,6 @@ chmod 755 get_modem_status.py
 mv prometheus.yml /etc/prometheus/
 chmod 755 /etc/prometheus/prometheus.yml
 
-# check SD micro card is mounted in /mnt/microsd
-echo "Checking SD Micro card directory. . . ."
-if  [  "$(mount | grep -c "/mnt/microsd")" -ge 1 ] ; then
-        echo "  SD Micro card storage directory exists."
-else
-        echo "  SD Micro directory does not exist; using default prometheus storage"
-fi
-
 # set up monitoring as a service
 python3 configure_prometheus.py
 mv prometheus.service /usr/lib/systemd/system
