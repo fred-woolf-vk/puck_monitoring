@@ -11,7 +11,7 @@ echo "--------------------------------------------------------------------------
 apt-get install prometheus-node-exporter -y
 echo "--------------------------------------------------------------------------------"
 
-mkdir /home/user/gw6200_scripts
+mkdir -p /home/user/gw6200_scripts
 chmod 755 /home/user/gw6200_scripts
 cd /home/user/gw6200_scripts
 rm -f *.1
@@ -37,7 +37,7 @@ echo "--------------------------------------------------------------------------
 
 chmod 755 gw6200_monitoring_script.sh
 chmod 755 update_monitoring_scripts_from_repo.sh
-chmod 755 collect_db_stats.py
+chmod 755 collect_db_stats_prometheus.py
 chmod 755 get_modem_status.py
 mv prometheus.yml /etc/prometheus/
 chmod 755 /etc/prometheus/prometheus.yml
