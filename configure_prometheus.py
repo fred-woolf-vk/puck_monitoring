@@ -70,7 +70,9 @@ def get_storage_string():
             print(" SD micro card mount point ", get_mount_point(storage_path), "  found for device ",
                   get_mounted_device(storage_path))
             freespace = get_fs_freespace(storage_path)
-            print("  SD micro card freespace: ", freespace)
+            print("  SD micro card freespace: ", freespace, "Bytes  ", end='')
+            if megabyte < freespace < gigabyte: print(round(freespace/megabyte, 2), "MB")
+            elif freespace > gigabyte: print(round(freespace/gigabyte, 2), "GB")
             max_bytes_storage = 0
             str_storage_path = ''
             days = 0
