@@ -1,9 +1,9 @@
 #!/bin/sh
 
 echo " ----------------------   stop monitoring service"
-systemctl stop puck_monitoring_service.service
+systemctl stop gw6200_exporter.service
 
-cd /home/user/gw6200_exporter
+cd /home/user/gw6200_scripts
 rm -f collect_db_stats_prometheus.py
 rm -f get_modem_status.py
 
