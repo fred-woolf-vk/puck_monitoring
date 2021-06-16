@@ -37,6 +37,8 @@ time.sleep(1)
 # this calculates the 'Availability' percentage
 def calculate_percentage_uptime(modem_num, stats_connected, locked):
 	global total_time_in_secs_script_running, prev_time, time_increment_in_sec_Modem
+	if modem_num == '1': modem_num = "Modem 1"
+	if modem_num == '0': modem_num = "Modem 0"
 
 	# if "connected" status in mmcli bearer is "yes" then add data collection interval to the total time available
 	#print("\n% 1 available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num], time_increment_in_sec_Modem)
@@ -75,22 +77,23 @@ g_duration1 = Gauge('gw6200_duration1', 'Modem 1')
 g_duration2 = Gauge('gw6200_duration2', 'Modem 2')
 g_total_duration1 = Gauge('gw6200_total_duration1', 'Modem 1')
 g_total_duration2 = Gauge('gw6200_total_duration2', 'Modem 2')
-s_bytes_tx1 = Summary('gw6200_bytes_transmitted1', 'Modem 1')
-s_total_bytes_tx1 = Summary('gw6200_total_bytes_transmitted1', 'Modem 1')
-s_bytes_rx1 = Summary('gw6200_bytes_received1', 'Modem 1')
-s_total_bytes_rx1 = Summary('gw6200_total_bytes_received1', 'Modem 1')
-s_bytes_tx2 = Summary('gw6200_bytes_transmitted2', 'Modem 2')
-s_total_bytes_tx2 = Summary('gw6200_total_bytes_transmitted2', 'Modem 2')
-s_bytes_rx2 = Summary('gw6200_bytes_received2', 'Modem 2')
-s_total_bytes_rx2 = Summary('gw6200_total_bytes_received2', 'Modem 2')
+g_bytes_tx1 = Gauge('gw6200_bytes_transmitted1', 'Modem 1')
+g_total_bytes_tx1 = Gauge('gw6200_total_bytes_transmitted1', 'Modem 1')
+g_bytes_rx1 = Gauge('gw6200_bytes_received1', 'Modem 1')
+g_total_bytes_rx1 = Gauge('gw6200_total_bytes_received1', 'Modem 1')
+g_bytes_tx2 = Gauge('gw6200_bytes_transmitted2', 'Modem 2')
+g_total_bytes_tx2 = Gauge('gw6200_total_bytes_transmitted2', 'Modem 2')
+g_bytes_rx2 = Gauge('gw6200_bytes_received2', 'Modem 2')
+g_total_bytes_rx2 = Gauge('gw6200_total_bytes_received2', 'Modem 2')
 i_modem_info1 = Info("gw6200_modem_info1", 'Modem 1')
 i_modem_info2 = Info("gw6200_modem_info2", 'Modem 2')
-i_remote_server_ip = Info("gw6200_modem_remote_server_ip", 'Modem 0')
+i_remote_server_ip = Info("gw6200_modem_remote_server_ip", 'Modem 1')
 g_percent_uptime1 = Gauge('gw6200_percent_uptime1', 'Modem 1')
 g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2')
 g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1')
 g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2')
-
+i_modem_number_1 = Info("gw6200_modem_number1", 'Modem 1')
+i_modem_number_2 = Info("gw6200_modem_number2", 'Modem 2')
 get_config_params()
 
 while(1):
@@ -100,17 +103,16 @@ while(1):
 		list_all_stats = get_modem_stats()
 		print("\n", list_all_stats, "\n")
 		for i in range(len(list_all_stats)):
-			current_interface = 'wwan0'
-			current_modem = 'Modem 0'
-			if i == 1:
-				current_interface = 'wwan1'
-				current_modem = 'Modem 1'
+			current_interface = list_all_stats[i]["interface"]
+			current_modem_number = list_all_stats[i]["current_modem_number"]
 
 			# check ping times to NY server
 			ping_time_wwan[i] = get_average_ping_time(current_interface, str(NUM_PINGS_TO_AVERAGE))
 			#print(" ping time[" + str(i) + "]:" + str(ping_time_wwan[i]))
 
 			# some elements can be randomly missing in data updates from the modem; make sure any missing data returns -1
+			duration_min = -1
+			total_duration_min = -1
 			try:
 				duration_min = (int(list_all_stats[i]['duration']))/60  #change default seconds to minutes for display
 				#print("duration_min0 = ", duration_min0)
@@ -140,7 +142,6 @@ while(1):
 
 			#percent_uptime1 = (total_duration_min1)/(duration_min1)*100
 			#percent_uptime0 = (total_duration_min0)/(duration_min0)*100
-
 			# for each non-string element expected in the data from modem, if not in this current snapshot, set the value to -1
 			if 'current_signal_strength' not in list_all_stats[i].keys():
 				list_all_stats[i]['current_signal_strength'] = -1
@@ -159,22 +160,27 @@ while(1):
 
 			# json_body is the data sent to the influx db; list_all_stats[i] is Modem 0,
 			#  list_all_stats[1] is Modem 1
-			this_interface_name = "ping_time_avg_" +  list_all_stats[i]["interface"]
+			this_interface_name = list_all_stats[i]["interface"]
 
 			try:
 				i_remote_server_ip.info({'remote_server':remote_server_ip_address})
-				#pdb.set_trace()
+				displayed_modem_number = str(int(list_all_stats[i]["current_modem_number"]) + 1)
+
 				if i == 0:  # modem 1
 					g_signal_strength1.set(int(list_all_stats[i]['current_signal_strength'][:2]))
 					g_duration1.set(float(duration_min)) # up time in minutes
-					s_bytes_tx1.observe(float(list_all_stats[i]['bytesTx']))
-					s_bytes_rx1.observe(float(list_all_stats[i]['bytesRx']))
-					s_total_bytes_tx1.observe(float(list_all_stats[i]['total_bytesTx']))
-					s_total_bytes_rx1.observe(float(list_all_stats[i]['total_bytesRx']))
-					i_modem_info1.info({'ip_addr':list_all_stats[i]['ipaddr'], "modem":"Modem 1", "interface":"wan0",
-										"Operator":list_all_stats[i]['operator_name']})
+					g_bytes_tx1.set(float(list_all_stats[i]['bytesTx']))
+					g_bytes_rx1.set(float(list_all_stats[i]['bytesRx']))
+					g_total_bytes_tx1.set(float(list_all_stats[i]['total_bytesTx']))
 
-					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem,
+					g_total_bytes_rx1.set(float(list_all_stats[i]['total_bytesRx']))
+					i_modem_info1.info({'IP':list_all_stats[i]['ipaddr'],
+										"Carrier_config":list_all_stats[i]['carrier_config'],
+										"interface":this_interface_name,
+										"Operator":list_all_stats[i]['operator_name'],
+										"Modem_number":current_modem_number})
+					i_modem_number_1.info({"modem_number":current_modem_number})
+					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem_number,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
 					g_duration1.set(duration_min)
 					g_total_duration1.set(total_duration_min)
@@ -183,13 +189,18 @@ while(1):
 				else:   # modem 2
 					g_signal_strength2.set(int(list_all_stats[i]['current_signal_strength'][:2]))
 					g_duration2.set(float(duration_min)) # up time in minutes
-					s_bytes_tx2.observe(float(list_all_stats[i]['bytesTx']))
-					s_bytes_rx2.observe(float(list_all_stats[i]['bytesRx']))
-					s_total_bytes_tx2.observe(float(list_all_stats[i]['total_bytesTx']))
-					s_total_bytes_rx2.observe(float(list_all_stats[i]['total_bytesRx']))
-					i_modem_info2.info({'ip_addr':list_all_stats[i]['ipaddr'],  "modem":"Modem 2", "interface":"wan1",
-										"Operator":list_all_stats[i]['operator_name']})
-					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem,
+					g_bytes_tx2.set(float(list_all_stats[i]['bytesTx']))
+					g_bytes_rx2.set(float(list_all_stats[i]['bytesRx']))
+					g_total_bytes_tx2.set(float(list_all_stats[i]['total_bytesTx']))
+					g_total_bytes_rx2.set(float(list_all_stats[i]['total_bytesRx']))
+
+					i_modem_info2.info({'IP':list_all_stats[i]['ipaddr'],
+										"Carrier_config": list_all_stats[i]['carrier_config'],
+										"Interface":this_interface_name,
+										"Operator":list_all_stats[i]['operator_name'],
+										"Modem_number":current_modem_number})
+					i_modem_number_2.info({"Modem_number":current_modem_number})
+					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem_number,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
 					g_duration2.set(duration_min)
 					g_total_duration2.set(total_duration_min)
