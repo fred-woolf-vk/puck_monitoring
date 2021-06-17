@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 7,
-  "iteration": 1622551026106,
+  "iteration": 1623879882252,
   "links": [
     {
       "asDropdown": true,
@@ -28,140 +28,10 @@
   "panels": [
     {
       "datasource": "$Prometheus_DB_source",
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 27,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "/^ip_addr$/",
-          "values": true
-        },
-        "textMode": "value_and_name"
-      },
-      "pluginVersion": "7.3.7",
-      "targets": [
-        {
-          "expr": "gw6200_modem_info1_info",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "{{ip_addr}}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Modem 1",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": "$Prometheus_DB_source",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 38,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "/^ip_addr$/",
-          "values": true
-        },
-        "textMode": "value_and_name"
-      },
-      "pluginVersion": "7.3.7",
-      "targets": [
-        {
-          "expr": "gw6200_modem_info2_info",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "{{ip_addr}}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Modem 2",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -179,28 +49,44 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 152
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Carrier_config"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 178
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 2,
+        "h": 3,
         "w": 12,
         "x": 0,
-        "y": 2
+        "y": 0
       },
-      "id": 37,
+      "id": 44,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^interface$/",
-          "values": true
-        },
-        "textMode": "value_and_name"
+        "frameIndex": 1,
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "7.3.7",
       "targets": [
@@ -209,21 +95,45 @@
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "{{interface}}",
+          "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "expr": "gw6200_carrier_config2_info",
+          "format": "table",
+          "hide": true,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Modem 1 Interface Name",
-      "type": "stat"
+      "title": "Modem",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Carrier_config",
+                "IP",
+                "Operator",
+                "Modem_number"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
-      "datasource": null,
+      "datasource": "$Prometheus_DB_source",
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
+            "align": "center",
             "filterable": false
           },
           "mappings": [],
@@ -241,28 +151,44 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 152
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Carrier_config"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 178
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 2,
+        "h": 3,
         "w": 12,
         "x": 12,
-        "y": 2
+        "y": 0
       },
-      "id": 39,
+      "id": 45,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^interface$/",
-          "values": false
-        },
-        "textMode": "value_and_name"
+        "frameIndex": 1,
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "7.3.7",
       "targets": [
@@ -271,14 +197,38 @@
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "{{interface}}",
+          "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "expr": "gw6200_carrier_config2_info",
+          "format": "table",
+          "hide": true,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Modem 2 Interface Name",
-      "type": "stat"
+      "title": "Modem",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Operator",
+                "Modem_number",
+                "Interface",
+                "IP"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "datasource": "$Prometheus_DB_source",
@@ -314,7 +264,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 4
+        "y": 3
       },
       "id": 29,
       "options": {
@@ -403,7 +353,7 @@
         "h": 4,
         "w": 8,
         "x": 4,
-        "y": 4
+        "y": 3
       },
       "hiddenSeries": false,
       "id": 31,
@@ -555,7 +505,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 4
+        "y": 3
       },
       "id": 10,
       "options": {
@@ -644,7 +594,7 @@
         "h": 4,
         "w": 8,
         "x": 16,
-        "y": 4
+        "y": 3
       },
       "hiddenSeries": false,
       "id": 32,
@@ -807,7 +757,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 8
+        "y": 7
       },
       "id": 14,
       "options": {
@@ -928,7 +878,7 @@
         "h": 4,
         "w": 8,
         "x": 4,
-        "y": 8
+        "y": 7
       },
       "hiddenSeries": false,
       "id": 19,
@@ -1092,7 +1042,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 8
+        "y": 7
       },
       "id": 16,
       "options": {
@@ -1213,7 +1163,7 @@
         "h": 4,
         "w": 8,
         "x": 16,
-        "y": 8
+        "y": 7
       },
       "hiddenSeries": false,
       "id": 17,
@@ -1355,7 +1305,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 4,
@@ -1544,7 +1494,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 12
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 40,
@@ -1592,6 +1542,7 @@
               "type": "fill"
             }
           ],
+          "instant": false,
           "interval": "",
           "legendFormat": "duration",
           "measurement": "uptime",
@@ -1638,6 +1589,7 @@
               "type": "fill"
             }
           ],
+          "instant": false,
           "interval": "",
           "legendFormat": "total duration",
           "measurement": "uptime",
@@ -1678,6 +1630,12 @@
         "sort": 1,
         "value_type": "individual"
       },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1732,10 +1690,10 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 17
       },
       "hiddenSeries": false,
-      "id": 24,
+      "id": 46,
       "legend": {
         "avg": false,
         "current": false,
@@ -1763,7 +1721,7 @@
       "targets": [
         {
           "alias": "bytes_rx",
-          "expr": "gw6200_bytes_received1_count",
+          "expr": "gw6200_bytes_received1",
           "groupBy": [
             {
               "params": [
@@ -1810,7 +1768,7 @@
         },
         {
           "alias": "total_bytes_rx",
-          "expr": "gw6200_bytes_transmitted1_count",
+          "expr": "gw6200_total_bytes_received1",
           "groupBy": [
             {
               "params": [
@@ -1826,7 +1784,7 @@
             }
           ],
           "interval": "",
-          "legendFormat": "bytes tx",
+          "legendFormat": "total bytes rx",
           "measurement": "uptime",
           "orderByTime": "ASC",
           "policy": "default",
@@ -1857,7 +1815,7 @@
         },
         {
           "alias": "bytes_tx",
-          "expr": "gw6200_total_bytes_received1_count",
+          "expr": "gw6200_bytes_transmitted1",
           "groupBy": [
             {
               "params": [
@@ -1873,7 +1831,7 @@
             }
           ],
           "interval": "",
-          "legendFormat": "total bytes rx",
+          "legendFormat": "bytes tx",
           "measurement": "uptime",
           "orderByTime": "ASC",
           "policy": "default",
@@ -1904,7 +1862,7 @@
         },
         {
           "alias": "total_bytes_tx",
-          "expr": "gw6200_total_bytes_transmitted1_count",
+          "expr": "gw6200_total_bytes_transmitted1",
           "groupBy": [
             {
               "params": [
@@ -1961,6 +1919,12 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2015,10 +1979,10 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 17
       },
       "hiddenSeries": false,
-      "id": 41,
+      "id": 47,
       "legend": {
         "avg": false,
         "current": false,
@@ -2046,7 +2010,7 @@
       "targets": [
         {
           "alias": "bytes_rx",
-          "expr": "gw6200_bytes_received2_count",
+          "expr": "gw6200_bytes_received2",
           "groupBy": [
             {
               "params": [
@@ -2093,7 +2057,7 @@
         },
         {
           "alias": "total_bytes_rx",
-          "expr": "gw6200_bytes_transmitted2_count",
+          "expr": "gw6200_total_bytes_received2",
           "groupBy": [
             {
               "params": [
@@ -2109,7 +2073,7 @@
             }
           ],
           "interval": "",
-          "legendFormat": "bytes tx",
+          "legendFormat": "total bytes rx",
           "measurement": "uptime",
           "orderByTime": "ASC",
           "policy": "default",
@@ -2140,7 +2104,7 @@
         },
         {
           "alias": "bytes_tx",
-          "expr": "gw6200_total_bytes_received2_count",
+          "expr": "gw6200_bytes_transmitted2",
           "groupBy": [
             {
               "params": [
@@ -2156,7 +2120,7 @@
             }
           ],
           "interval": "",
-          "legendFormat": "total bytes rx",
+          "legendFormat": "bytes tx",
           "measurement": "uptime",
           "orderByTime": "ASC",
           "policy": "default",
@@ -2187,7 +2151,7 @@
         },
         {
           "alias": "total_bytes_tx",
-          "expr": "gw6200_total_bytes_transmitted2_count",
+          "expr": "gw6200_total_bytes_transmitted2",
           "groupBy": [
             {
               "params": [
@@ -2244,6 +2208,12 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2295,7 +2265,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 34,
@@ -2433,7 +2403,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 42,
@@ -2554,7 +2524,7 @@
       }
     }
   ],
-  "refresh": "10s",
+  "refresh": "5s",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -2563,8 +2533,8 @@
       {
         "current": {
           "selected": false,
-          "text": "default",
-          "value": "default"
+          "text": "Prometheus-192.168.1.4",
+          "value": "Prometheus-192.168.1.4"
         },
         "error": null,
         "hide": 0,
@@ -2610,12 +2580,12 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "gw-modem-stats",
   "uid": "01",
-  "version": 4
+  "version": 16
 }
