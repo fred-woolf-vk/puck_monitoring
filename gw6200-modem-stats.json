@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 7,
-  "iteration": 1623879882252,
+  "iteration": 1623935218738,
   "links": [
     {
       "asDropdown": true,
@@ -119,8 +119,9 @@
               "names": [
                 "Carrier_config",
                 "IP",
+                "Modem_number",
                 "Operator",
-                "Modem_number"
+                "interface"
               ]
             }
           }
@@ -219,10 +220,11 @@
           "options": {
             "include": {
               "names": [
-                "Operator",
-                "Modem_number",
+                "Carrier_config",
+                "IP",
                 "Interface",
-                "IP"
+                "Operator",
+                "Modem_number"
               ]
             }
           }
@@ -2524,7 +2526,7 @@
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": "10s",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -2532,9 +2534,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "Prometheus-192.168.1.4",
-          "value": "Prometheus-192.168.1.4"
+          "selected": true,
+          "text": "Prometheus-192.168.1.5",
+          "value": "Prometheus-192.168.1.5"
         },
         "error": null,
         "hide": 0,
@@ -2587,5 +2589,5 @@
   "timezone": "",
   "title": "gw-modem-stats",
   "uid": "01",
-  "version": 16
+  "version": 34
 }
