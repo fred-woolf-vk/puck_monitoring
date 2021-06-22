@@ -5,7 +5,7 @@
 # Copyright Vertical Knowledge, Inc.
 # version 1.0
 #**************************************************************/
-from prometheus_client import start_http_server, Summary, Info, Gauge, Counter
+from prometheus_client import start_http_server, Summary, Info, Gauge, Counter, Histogram
 import datetime
 import time
 from get_modem_status import *
@@ -92,8 +92,11 @@ g_percent_uptime1 = Gauge('gw6200_percent_uptime1', 'Modem 1')
 g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2')
 g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1')
 g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2')
+h_ping_time_to_server1 = Histogram('gw6200_ping_time_histogram1', 'Modem 1', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')])
+h_ping_time_to_server2 = Histogram('gw6200_ping_time_histogram2', 'Modem 2', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')])
 i_modem_number_1 = Info("gw6200_modem_number1", 'Modem 1')
 i_modem_number_2 = Info("gw6200_modem_number2", 'Modem 2')
+
 get_config_params()
 
 while(1):
@@ -185,6 +188,8 @@ while(1):
 					g_duration1.set(duration_min)
 					g_total_duration1.set(total_duration_min)
 					g_ping_time_to_server1.set(ping_time_wwan[i])
+					h_ping_time_to_server1.observe(ping_time_wwan[i])
+					print("   ping tine 1: ", ping_time_wwan[i])
 
 				else:   # modem 2
 					g_signal_strength2.set(int(list_all_stats[i]['current_signal_strength'][:2]))
@@ -205,6 +210,8 @@ while(1):
 					g_duration2.set(duration_min)
 					g_total_duration2.set(total_duration_min)
 					g_ping_time_to_server2.set(ping_time_wwan[i])
+					h_ping_time_to_server2.observe(ping_time_wwan[i])
+					print("   ping tine 2: ", ping_time_wwan[i])
 
 			except:
 				print("\n Error!  Unable to write db values\n", sys.exc_info())
