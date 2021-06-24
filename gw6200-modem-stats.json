@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 7,
-  "iteration": 1623935218738,
+  "iteration": 1624367028596,
   "links": [
     {
       "asDropdown": true,
@@ -97,15 +97,6 @@
           "interval": "",
           "legendFormat": "",
           "refId": "A"
-        },
-        {
-          "expr": "gw6200_carrier_config2_info",
-          "format": "table",
-          "hide": true,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "B"
         }
       ],
       "timeFrom": null,
@@ -738,8 +729,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-yellow",
+                "color": "dark-red",
                 "value": null
+              },
+              {
+                "color": "dark-yellow",
+                "value": 25
               },
               {
                 "color": "dark-orange",
@@ -747,7 +742,7 @@
               },
               {
                 "color": "dark-green",
-                "value": 80
+                "value": 75
               }
             ]
           },
@@ -826,6 +821,12 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Signal Strength  (Current)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "gauge"
     },
     {
@@ -1023,8 +1024,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-yellow",
+                "color": "dark-red",
                 "value": null
+              },
+              {
+                "color": "dark-yellow",
+                "value": 25
               },
               {
                 "color": "dark-orange",
@@ -1032,7 +1037,7 @@
               },
               {
                 "color": "dark-green",
-                "value": 80
+                "value": 75
               }
             ]
           },
@@ -2342,6 +2347,12 @@
               "value": "Modem 0"
             }
           ]
+        },
+        {
+          "expr": "$serverIP",
+          "interval": "",
+          "legendFormat": "{{remote_server}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -2354,6 +2365,12 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2408,7 +2425,7 @@
         "y": 23
       },
       "hiddenSeries": false,
-      "id": 42,
+      "id": 48,
       "legend": {
         "avg": false,
         "current": false,
@@ -2480,6 +2497,12 @@
               "value": "Modem 0"
             }
           ]
+        },
+        {
+          "expr": "$serverIP",
+          "interval": "",
+          "legendFormat": "{{remote_server}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -2492,6 +2515,12 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2507,7 +2536,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -2535,8 +2564,8 @@
       {
         "current": {
           "selected": true,
-          "text": "Prometheus-192.168.1.5",
-          "value": "Prometheus-192.168.1.5"
+          "text": "Prometheus-192.168.1.10",
+          "value": "Prometheus-192.168.1.10"
         },
         "error": null,
         "hide": 0,
@@ -2562,7 +2591,7 @@
         "datasource": "$Prometheus_DB_source",
         "definition": "gw6200_modem_remote_server_ip_info",
         "error": null,
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "server IP",
         "multi": false,
@@ -2582,12 +2611,12 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "gw-modem-stats",
   "uid": "01",
-  "version": 34
+  "version": 45
 }
