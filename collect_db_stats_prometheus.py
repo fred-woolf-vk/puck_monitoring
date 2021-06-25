@@ -13,11 +13,7 @@ import sys
 import socket
 import pdb 
 
-# use current IP for database query
-current_ip_addr = socket.gethostbyname(socket.gethostname())
 print(" prometheus gw6200 exporter")
-print (current_ip_addr)
-#client=InfluxDBClient(host=current_ip_addr, port="8086")
 
 DATA_COLLECTION_INTERVAL_IN_SECS = 15
 NUM_PINGS_TO_AVERAGE = 5
