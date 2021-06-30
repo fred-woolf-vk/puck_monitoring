@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": 405,
   "graphTooltip": 0,
-  "id": 8,
-  "iteration": 1624391217537,
+  "id": 2,
+  "iteration": 1624998548109,
   "links": [
     {
       "asDropdown": true,
@@ -29,11 +29,29 @@
   "panels": [
     {
       "datasource": "$PromDataSource",
+      "gridPos": {
+        "h": 2,
+        "w": 11,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.0.2",
+      "repeat": null,
+      "title": "$node",
+      "type": "text"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "$PromDataSource",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null,
-            "filterable": false
+          "color": {
+            "mode": "thresholds"
           },
           "mappings": [],
           "thresholds": {
@@ -48,51 +66,10 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "none"
         },
         "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 11,
-        "x": 0,
-        "y": 0
-      },
-      "id": 11,
-      "options": {
-        "content": "",
-        "mode": "markdown"
-      },
-      "pluginVersion": "7.3.7",
-      "repeat": null,
-      "title": "$node",
-      "type": "text"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
-      ],
-      "datasource": "$PromDataSource",
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
       },
       "gridPos": {
         "h": 2,
@@ -103,42 +80,24 @@
       "id": 20,
       "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "$$hashKey": "object:1045",
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "$$hashKey": "object:1046",
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "maxPerRow": 6,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "repeat": null,
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
       },
-      "tableColumn": "",
+      "pluginVersion": "8.0.2",
+      "repeat": null,
       "targets": [
         {
           "expr": "count(node_cpu_seconds_total{instance=~\"$node\", mode=\"system\"}) or count(node_cpu{instance=~\"$node\", mode=\"system\"})",
@@ -152,19 +111,8 @@
           "target": ""
         }
       ],
-      "thresholds": "",
       "title": "CPU Cores",
-      "type": "singlestat",
-      "valueFontSize": "50%",
-      "valueMaps": [
-        {
-          "$$hashKey": "object:1048",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
+      "type": "stat"
     },
     {
       "aliasColors": {},
@@ -175,12 +123,6 @@
       "decimals": 3,
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 10,
       "fillGradient": 0,
       "grid": {},
@@ -213,7 +155,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -358,12 +300,6 @@
       "datasource": "$PromDataSource",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -393,7 +329,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -418,7 +354,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Load - 1 min avg",
+      "title": "Load - 1m avg",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -457,6 +393,87 @@
       }
     },
     {
+      "datasource": "${PromDataSource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 2
+      },
+      "id": 38,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "(time() - node_boot_time_seconds)/60",
+          "interval": "",
+          "legendFormat": "processor uptime",
+          "refId": "A"
+        }
+      ],
+      "title": "Uptime - minutes",
+      "type": "timeseries"
+    },
+    {
       "aliasColors": {
         "Slab": "#E5A8E2",
         "Swap": "#E24D42"
@@ -468,12 +485,6 @@
       "decimals": 2,
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -481,7 +492,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 2
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 17,
@@ -503,20 +514,18 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "repeat": null,
       "seriesOverrides": [
         {
-          "$$hashKey": "object:2377",
           "alias": "/Apps|Buffers|Cached|Free|Slab|SwapCached|PageTables|VmallocUsed/",
           "fill": 5,
           "stack": true
         },
         {
-          "$$hashKey": "object:2378",
           "alias": "Swap",
           "fill": 5,
           "stack": true
@@ -687,13 +696,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
+      "datasource": "${PromDataSource}",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -720,7 +723,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -784,23 +787,210 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "${PromDataSource}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 29,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.0.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_filesystem_avail_bytes",
+          "interval": "",
+          "legendFormat": "{{device}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "File system available bytes",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:529",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:530",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": "$PromDataSource",
+      "decimals": 3,
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
         "h": 7,
         "w": 8,
-        "x": 8,
-        "y": 9
+        "x": 16,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 9,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "maxPerRow": 6,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.0.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "100.0 - 100 * (node_filesystem_avail_bytes{instance=~'$node',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size_bytes{instance=~'$node',device !~'tmpfs',device!~'by-uuid'}) or 100.0 - 100 * (node_filesystem_avail{instance=~'$node',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size{instance=~'$node',device !~'tmpfs',device!~'by-uuid'})",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{mountpoint}}",
+          "metric": "",
+          "refId": "A",
+          "step": 1200,
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk Space Used",
+      "tooltip": {
+        "msResolution": true,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:87",
+          "format": "percent",
+          "logBase": 1,
+          "max": 100,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:88",
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$PromDataSource",
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 12,
@@ -822,14 +1012,13 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "repeat": null,
       "seriesOverrides": [
         {
-          "$$hashKey": "object:394",
           "alias": "/.*_in/",
           "transform": "negative-Y"
         }
@@ -839,7 +1028,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(node_network_receive_bytes_total{instance=~'$node'}[$__interval])*8 or irate(node_network_receive_bytes{instance=~'$node'}[$__interval])*8",
+          "expr": "irate(node_network_receive_bytes_total{instance=~'$node'}[5m])*8 or irate(node_network_receive_bytes{instance=~'$node'}[5m])*8",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{device}}_in",
@@ -850,7 +1039,6 @@
         },
         {
           "expr": "irate(node_network_transmit_bytes_total{instance=~'$node'}[5m])*8 or irate(node_network_transmit_bytes{instance=~'$node'}[5m])*8",
-          "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{device}}_out",
@@ -909,12 +1097,138 @@
       "datasource": "$PromDataSource",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
+      "fill": 1,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 16
       },
+      "hiddenSeries": false,
+      "id": 23,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "maxPerRow": 6,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.0.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:156",
+          "alias": "/.*Out.*/",
+          "transform": "negative-Y"
+        },
+        {
+          "$$hashKey": "object:157",
+          "alias": "Udp_NoPorts",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(node_netstat_Udp_InDatagrams{instance=~\"$node\"}[5m])",
+          "intervalFactor": 2,
+          "legendFormat": "Udp_InDatagrams",
+          "refId": "A",
+          "step": 1200,
+          "target": ""
+        },
+        {
+          "expr": "irate(node_netstat_Udp_InErrors{instance=~\"$node\"}[5m])",
+          "intervalFactor": 2,
+          "legendFormat": "Udp_InErrors",
+          "refId": "B",
+          "step": 1200
+        },
+        {
+          "exemplar": true,
+          "expr": "irate(node_netstat_Udp_OutDatagrams{instance=~\"$node\"}[5m])",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Udp_OutDatagrams",
+          "refId": "C",
+          "step": 1200
+        },
+        {
+          "expr": "irate(node_netstat_Udp_NoPorts{instance=~\"$node\"}[5m])",
+          "intervalFactor": 2,
+          "legendFormat": "Udp_NoPorts",
+          "refId": "D",
+          "step": 1200
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "UDP Stats",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:170",
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:171",
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$PromDataSource",
+      "editable": true,
+      "error": false,
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -922,7 +1236,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 9
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 21,
@@ -944,7 +1258,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1017,323 +1331,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$PromDataSource",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 0,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 41,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum(rate(node_network_receive_bytes_total[1m]))",
-          "interval": "",
-          "legendFormat": "total bytes",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Network Utilization - Total Node Rate Rx&Tx (1 min)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1531",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1532",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 8,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 40,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum(rate(node_network_receive_packets_total[1m])) by (node)",
-          "interval": "",
-          "legendFormat": "rec pkts",
-          "refId": "C"
-        },
-        {
-          "expr": "sum(rate(node_network_transmit_packets_total[1m]))",
-          "interval": "",
-          "legendFormat": "tx pkts",
-          "refId": "D"
-        },
-        {
-          "expr": "sum(rate(node_network_receive_drop_total[1m])) by (node)  ",
-          "interval": "",
-          "legendFormat": "rec drop",
-          "refId": "A"
-        },
-        {
-          "expr": "sum(rate(node_network_transmit_drop_total[1m])) by (node)",
-          "interval": "",
-          "legendFormat": "tx drop",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Network Saturation (packets/min)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1303",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1304",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 16,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 43,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "rate(node_network_transmit_errs_total[1m])",
-          "interval": "",
-          "legendFormat": "{{device}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Network Errors (1 min)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:2553",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:2554",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$PromDataSource",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
@@ -1344,7 +1343,7 @@
         "y": 23
       },
       "hiddenSeries": false,
-      "id": 23,
+      "id": 22,
       "legend": {
         "avg": false,
         "current": false,
@@ -1363,61 +1362,32 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "repeat": null,
-      "seriesOverrides": [
-        {
-          "alias": "/.*Out.*/",
-          "transform": "negative-Y"
-        },
-        {
-          "alias": "Udp_NoPorts",
-          "yaxis": 2
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(node_netstat_Udp_InDatagrams{instance=~\"$node\"}[5m])",
+          "expr": "irate(node_context_switches_total{instance=~\"$node\"}[5m]) or irate(node_context_switches{instance=~\"$node\"}[5m])",
+          "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "Udp_InDatagrams",
+          "legendFormat": "context switches",
+          "metric": "",
           "refId": "A",
           "step": 1200,
           "target": ""
-        },
-        {
-          "expr": "irate(node_netstat_Udp_InErrors{instance=~\"$node\"}[5m])",
-          "intervalFactor": 2,
-          "legendFormat": "Udp_InErrors",
-          "refId": "B",
-          "step": 1200
-        },
-        {
-          "expr": "irate(node_netstat_Udp_OutDatagrams{instance=~\"$node\"}[5m])",
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "Udp_OutDatagrams",
-          "refId": "C",
-          "step": 1200
-        },
-        {
-          "expr": "irate(node_netstat_Udp_NoPorts{instance=~\"$node\"}[5m])",
-          "intervalFactor": 2,
-          "legendFormat": "Udp_NoPorts",
-          "refId": "D",
-          "step": 1200
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "UDP Stats",
+      "title": "Context Switches",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -1458,15 +1428,12 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
+      "datasource": "$PromDataSource",
+      "editable": true,
+      "error": false,
       "fill": 1,
       "fillGradient": 0,
+      "grid": {},
       "gridPos": {
         "h": 6,
         "w": 8,
@@ -1474,108 +1441,7 @@
         "y": 23
       },
       "hiddenSeries": false,
-      "id": 29,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "node_filesystem_avail_bytes",
-          "interval": "",
-          "legendFormat": "{{device}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "File system available bytes",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:529",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:530",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$PromDataSource",
-      "decimals": 3,
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 16,
-        "y": 23
-      },
-      "hiddenSeries": false,
-      "id": 9,
+      "id": 19,
       "legend": {
         "avg": false,
         "current": false,
@@ -1594,7 +1460,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1605,10 +1471,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100.0 - 100 * (node_filesystem_avail_bytes{instance=~'$node',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size_bytes{instance=~'$node',device !~'tmpfs',device!~'by-uuid'}) or 100.0 - 100 * (node_filesystem_avail{instance=~'$node',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size{instance=~'$node',device !~'tmpfs',device!~'by-uuid'})",
+          "expr": "irate(node_disk_io_time_seconds_total{instance=~\"$node\"}[5m])*100 or irate(node_disk_io_time_ms{instance=~\"$node\"}[5m])/10",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{mountpoint}}",
+          "legendFormat": "{{device}}",
           "metric": "",
           "refId": "A",
           "step": 1200,
@@ -1619,10 +1485,10 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk Space Used",
+      "title": "Disk Utilization per Device",
       "tooltip": {
-        "msResolution": true,
-        "shared": true,
+        "msResolution": false,
+        "shared": false,
         "sort": 0,
         "value_type": "cumulative"
       },
@@ -1636,15 +1502,15 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:87",
+          "$$hashKey": "object:167",
           "format": "percent",
           "logBase": 1,
           "max": 100,
-          "min": 0,
+          "min": null,
           "show": true
         },
         {
-          "$$hashKey": "object:88",
+          "$$hashKey": "object:168",
           "format": "short",
           "logBase": 1,
           "max": null,
@@ -1665,17 +1531,11 @@
       "datasource": "$PromDataSource",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 0,
         "y": 29
@@ -1700,7 +1560,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1769,17 +1629,11 @@
       "datasource": "$PromDataSource",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 8,
         "y": 29
@@ -1804,7 +1658,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1889,17 +1743,11 @@
       "datasource": "$PromDataSource",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 16,
         "y": 29
@@ -1924,7 +1772,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2006,26 +1854,17 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$PromDataSource",
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
+      "datasource": "${PromDataSource}",
       "fill": 1,
       "fillGradient": 0,
-      "grid": {},
       "gridPos": {
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 35
+        "y": 34
       },
       "hiddenSeries": false,
-      "id": 22,
+      "id": 34,
       "legend": {
         "avg": false,
         "current": false,
@@ -2036,45 +1875,38 @@
         "values": false
       },
       "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "maxPerRow": 6,
-      "nullPointMode": "connected",
+      "linewidth": 1,
+      "nullPointMode": "null",
       "options": {
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 5,
+      "pluginVersion": "8.0.2",
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeat": null,
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(node_context_switches_total{instance=~\"$node\"}[5m]) or irate(node_context_switches{instance=~\"$node\"}[5m])",
+          "exemplar": true,
+          "expr": "node_hwmon_temp_celsius",
           "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "context switches",
-          "metric": "",
-          "refId": "A",
-          "step": 1200,
-          "target": ""
+          "legendFormat": "{{chip}}",
+          "refId": "A"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Context Switches",
+      "title": "Temperatures",
       "tooltip": {
-        "msResolution": false,
         "shared": true,
         "sort": 0,
-        "value_type": "cumulative"
+        "value_type": "individual"
       },
       "type": "graph",
       "xaxis": {
@@ -2086,14 +1918,18 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:103",
           "format": "short",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:104",
           "format": "short",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
@@ -2110,126 +1946,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$PromDataSource",
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
+      "datasource": "${PromDataSource}",
       "fill": 1,
       "fillGradient": 0,
-      "grid": {},
       "gridPos": {
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 35
-      },
-      "hiddenSeries": false,
-      "id": 19,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "maxPerRow": 6,
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeat": null,
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(node_disk_io_time_seconds_total{instance=~\"$node\"}[5m])*100 or irate(node_disk_io_time_ms{instance=~\"$node\"}[5m])/10",
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "{{device}}",
-          "metric": "",
-          "refId": "A",
-          "step": 1200,
-          "target": ""
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Disk Utilization per Device",
-      "tooltip": {
-        "msResolution": false,
-        "shared": false,
-        "sort": 0,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:167",
-          "format": "percent",
-          "logBase": 1,
-          "max": 100,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:168",
-          "format": "short",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 16,
-        "y": 35
+        "y": 34
       },
       "hiddenSeries": false,
       "id": 32,
@@ -2249,7 +1973,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2259,9 +1983,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "exemplar": true,
           "expr": "node_hwmon_in_volts",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{chip}}",
           "refId": "A"
         }
       ],
@@ -2285,6 +2010,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:103",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2293,103 +2019,7 @@
           "show": true
         },
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 41
-      },
-      "hiddenSeries": false,
-      "id": 34,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.3.7",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "node_hwmon_temp_celsius",
-          "interval": "",
-          "legendFormat": "{{chip}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Temperatures (deg. C)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:250",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:251",
+          "$$hashKey": "object:104",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2404,8 +2034,8 @@
       }
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 26,
+  "refresh": "10s",
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [
     "prometheus"
@@ -2426,6 +2056,7 @@
         },
         "datasource": "$PromDataSource",
         "definition": "",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2434,23 +2065,26 @@
         "multiFormat": "regex values",
         "name": "node",
         "options": [],
-        "query": "label_values(node_exporter_build_info, instance)",
+        "query": {
+          "query": "label_values(node_exporter_build_info, instance)",
+          "refId": "Prometheus-node-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
         "current": {
-          "selected": false,
-          "text": "Prometheus-192.168.1.4",
-          "value": "Prometheus-192.168.1.4"
+          "selected": true,
+          "text": "stun-2",
+          "value": "stun-2"
         },
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2468,7 +2102,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -2499,6 +2133,6 @@
   },
   "timezone": "browser",
   "title": "gw6200 node exporter",
-  "uid": "0",
-  "version": 48
+  "uid": "Zw6UfARnk",
+  "version": 22
 }
