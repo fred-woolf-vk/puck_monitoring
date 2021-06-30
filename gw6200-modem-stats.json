@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1624367028596,
+  "id": 1,
+  "iteration": 1624966248147,
   "links": [
     {
       "asDropdown": true,
@@ -32,6 +32,7 @@
         "defaults": {
           "custom": {
             "align": "center",
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -88,7 +89,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "expr": "gw6200_modem_info1_info",
@@ -97,6 +98,15 @@
           "interval": "",
           "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "expr": "gw6200_carrier_config2_info",
+          "format": "table",
+          "hide": true,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
         }
       ],
       "timeFrom": null,
@@ -126,6 +136,7 @@
         "defaults": {
           "custom": {
             "align": "center",
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -182,7 +193,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "expr": "gw6200_modem_info2_info",
@@ -230,8 +241,9 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -270,9 +282,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "expr": "gw6200_percent_uptime1",
@@ -334,12 +347,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -366,7 +373,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -471,8 +478,9 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -511,9 +519,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "expr": "gw6200_percent_uptime2",
@@ -575,12 +584,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -607,7 +610,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -713,28 +716,15 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
+          "mappings": [],
           "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-red",
-                "value": null
-              },
-              {
                 "color": "dark-yellow",
-                "value": 25
+                "value": null
               },
               {
                 "color": "dark-orange",
@@ -742,7 +732,7 @@
               },
               {
                 "color": "dark-green",
-                "value": 75
+                "value": 80
               }
             ]
           },
@@ -767,9 +757,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "expr": "gw6200_signal_strength1",
@@ -821,12 +812,6 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Signal Strength  (Current)",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {}
-        }
-      ],
       "type": "gauge"
     },
     {
@@ -839,38 +824,6 @@
       "datasource": "$Prometheus_DB_source",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "continuous-greens"
-          },
-          "custom": {},
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              },
-              {
-                "color": "#EAB839",
-                "value": 90
-              }
-            ]
-          },
           "unit": "percent"
         },
         "overrides": []
@@ -901,7 +854,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1008,28 +961,15 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
+          "mappings": [],
           "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-red",
-                "value": null
-              },
-              {
                 "color": "dark-yellow",
-                "value": 25
+                "value": null
               },
               {
                 "color": "dark-orange",
@@ -1037,7 +977,7 @@
               },
               {
                 "color": "dark-green",
-                "value": 75
+                "value": 80
               }
             ]
           },
@@ -1062,9 +1002,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "expr": "gw6200_signal_strength2",
@@ -1128,38 +1069,6 @@
       "datasource": "$Prometheus_DB_source",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "continuous-greens"
-          },
-          "custom": {},
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              },
-              {
-                "color": "#EAB839",
-                "value": 90
-              }
-            ]
-          },
           "unit": "percent"
         },
         "overrides": []
@@ -1190,7 +1099,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1293,19 +1202,14 @@
     {
       "aliasColors": {
         "duration": "light-green",
-        "total_duration": "light-yellow"
+        "processor uptime": "semi-dark-red",
+        "total_duration": "light-yellow",
+        "uptime": "semi-dark-red"
       },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "unit": "m"
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1315,7 +1219,7 @@
         "y": 11
       },
       "hiddenSeries": false,
-      "id": 4,
+      "id": 50,
       "legend": {
         "avg": false,
         "current": false,
@@ -1329,15 +1233,24 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "alertThreshold": false
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
-        {}
+        {
+          "$$hashKey": "object:774",
+          "alias": "processor uptime",
+          "fill": 0
+        },
+        {
+          "$$hashKey": "object:775",
+          "alias": "uptime",
+          "yaxis": 1
+        }
       ],
       "spaceLength": 10,
       "stack": false,
@@ -1345,6 +1258,7 @@
       "targets": [
         {
           "alias": "duration",
+          "exemplar": true,
           "expr": "gw6200_duration1",
           "groupBy": [
             {
@@ -1360,6 +1274,7 @@
               "type": "fill"
             }
           ],
+          "instant": false,
           "interval": "",
           "legendFormat": "duration",
           "measurement": "uptime",
@@ -1391,6 +1306,7 @@
         },
         {
           "alias": "total_duration",
+          "exemplar": true,
           "expr": "gw6200_total_duration1",
           "groupBy": [
             {
@@ -1406,6 +1322,7 @@
               "type": "fill"
             }
           ],
+          "instant": false,
           "interval": "",
           "legendFormat": "total duration",
           "measurement": "uptime",
@@ -1434,6 +1351,14 @@
               "value": "Modem 0"
             }
           ]
+        },
+        {
+          "exemplar": true,
+          "expr": "(time() - node_boot_time_seconds)/60",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "processor uptime",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1446,6 +1371,12 @@
         "sort": 1,
         "value_type": "individual"
       },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {}
+        }
+      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1466,11 +1397,11 @@
         },
         {
           "$$hashKey": "object:3029",
-          "format": "short",
+          "format": "m",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         }
       ],
@@ -1482,19 +1413,14 @@
     {
       "aliasColors": {
         "duration": "light-green",
-        "total_duration": "light-yellow"
+        "processor uptime": "semi-dark-red",
+        "total_duration": "light-yellow",
+        "uptime": "semi-dark-red"
       },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "unit": "m"
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1521,12 +1447,21 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
-        {}
+        {
+          "$$hashKey": "object:774",
+          "alias": "processor uptime",
+          "fill": 0
+        },
+        {
+          "$$hashKey": "object:775",
+          "alias": "uptime",
+          "yaxis": 1
+        }
       ],
       "spaceLength": 10,
       "stack": false,
@@ -1625,6 +1560,14 @@
               "value": "Modem 0"
             }
           ]
+        },
+        {
+          "exemplar": true,
+          "expr": "(time() - node_boot_time_seconds)/60",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "processor uptime",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1663,11 +1606,11 @@
         },
         {
           "$$hashKey": "object:3029",
-          "format": "short",
+          "format": "m",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         }
       ],
@@ -1684,13 +1627,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1717,11 +1653,16 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "{instance=\"localhost:9100\", job=\"node\"}",
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -1952,11 +1893,11 @@
         },
         {
           "$$hashKey": "object:3526",
-          "format": "short",
+          "format": "m",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         }
       ],
@@ -1975,7 +1916,6 @@
       "datasource": "$Prometheus_DB_source",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "decbytes"
         },
         "overrides": []
@@ -2006,11 +1946,16 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "{instance=\"localhost:9100\", job=\"node\"}",
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -2241,7 +2186,7 @@
         },
         {
           "$$hashKey": "object:3526",
-          "format": "short",
+          "format": "decbytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -2260,12 +2205,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -2292,7 +2231,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2347,12 +2286,6 @@
               "value": "Modem 0"
             }
           ]
-        },
-        {
-          "expr": "$serverIP",
-          "interval": "",
-          "legendFormat": "{{remote_server}}",
-          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -2365,12 +2298,6 @@
         "sort": 0,
         "value_type": "individual"
       },
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {}
-        }
-      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2386,7 +2313,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -2410,12 +2337,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Prometheus_DB_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -2425,7 +2346,7 @@
         "y": 23
       },
       "hiddenSeries": false,
-      "id": 48,
+      "id": 42,
       "legend": {
         "avg": false,
         "current": false,
@@ -2442,7 +2363,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.7",
+      "pluginVersion": "8.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2497,12 +2418,6 @@
               "value": "Modem 0"
             }
           ]
-        },
-        {
-          "expr": "$serverIP",
-          "interval": "",
-          "legendFormat": "{{remote_server}}",
-          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -2515,12 +2430,6 @@
         "sort": 0,
         "value_type": "individual"
       },
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {}
-        }
-      ],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -2545,7 +2454,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         }
       ],
@@ -2555,8 +2464,8 @@
       }
     }
   ],
-  "refresh": "10s",
-  "schemaVersion": 26,
+  "refresh": false,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -2564,9 +2473,10 @@
       {
         "current": {
           "selected": true,
-          "text": "Prometheus-192.168.1.10",
-          "value": "Prometheus-192.168.1.10"
+          "text": "stun-6",
+          "value": "stun-6"
         },
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2590,20 +2500,23 @@
         },
         "datasource": "$Prometheus_DB_source",
         "definition": "gw6200_modem_remote_server_ip_info",
+        "description": null,
         "error": null,
-        "hide": 2,
+        "hide": 0,
         "includeAll": false,
         "label": "server IP",
         "multi": false,
         "name": "serverIP",
         "options": [],
-        "query": "gw6200_modem_remote_server_ip_info",
+        "query": {
+          "query": "gw6200_modem_remote_server_ip_info",
+          "refId": "Prometheus-serverIP-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2611,12 +2524,12 @@
     ]
   },
   "time": {
-    "from": "now-1h",
-    "to": "now"
+    "from": "2021-06-29T14:58:57.319Z",
+    "to": "2021-06-29T17:41:25.697Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "gw-modem-stats",
-  "uid": "01",
-  "version": 45
+  "uid": "EE4UB0g7k",
+  "version": 15
 }
