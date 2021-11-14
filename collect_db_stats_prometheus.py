@@ -112,41 +112,43 @@ g_tunnel_ping_times = Gauge(
 	registry=registry1
 )
 
-
 get_config_params()
-
+stun_number = get_network_stun_number()
+if stun_number == 0:
+	print("Error in getting stun-number!")
+	raise Exception("Exception in getting stun-number!")
+else:
+	print(" stun number = ", stun_number)
 
 while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
-		print(" call test_multiple")
-		#test_multiple_g()
-
 		list_all_stats = get_modem_stats()
-		print("\n", list_all_stats, "\n")
+		#print("\n", list_all_stats, "\n")
 
-		tunnel_interface_for_ping = 'scatr102-4'
+		tunnel_interface_for_ping = 'scatr' + stun_number
 		tunnel_num_pings_to_average = '2'
 		'''g_ping_time_to_tunnel_ip1.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.1.5'))
 		g_ping_time_to_tunnel_ip2.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.2.5'))
 		g_ping_time_to_tunnel_ip3.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.3.5'))
 		g_ping_time_to_tunnel_ip4.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.4.5'))
 		'''
+		print(tunnel_interface_for_ping + '-1')
 		g_tunnel_ping_times.labels(
-					'tunnel1').set(get_average_ping_time('scatr102-1', tunnel_num_pings_to_average, ip_addr='10.102.1.5'))
+					'tunnel1').set(get_average_ping_time(tunnel_interface_for_ping + '-1', tunnel_num_pings_to_average, ip_addr='10.102.1.5'))
 		g_tunnel_ping_times.labels(
-					'tunnel2').set(get_average_ping_time('scatr102-2', tunnel_num_pings_to_average, ip_addr='10.102.2.5'))
+					'tunnel2').set(get_average_ping_time(tunnel_interface_for_ping + '-2', tunnel_num_pings_to_average, ip_addr='10.102.2.5'))
 		g_tunnel_ping_times.labels(
-					'tunnel3').set(get_average_ping_time('scatr102-3', tunnel_num_pings_to_average, ip_addr='10.102.3.5'))
+					'tunnel3').set(get_average_ping_time(tunnel_interface_for_ping + '-3', tunnel_num_pings_to_average, ip_addr='10.102.3.5'))
 		g_tunnel_ping_times.labels(
-					'tunnel4').set(get_average_ping_time('scatr102-4', tunnel_num_pings_to_average, ip_addr='10.102.4.5'))
+					'tunnel4').set(get_average_ping_time(tunnel_interface_for_ping + '-4', tunnel_num_pings_to_average, ip_addr='10.102.4.5'))
 
 		for i in range(len(list_all_stats)):
 			current_interface = list_all_stats[i]["interface"]
 			current_modem_number = list_all_stats[i]["current_modem_number"]
 
-			# check ping times to NY server
+			# check ping times to external server
 			ping_time_wwan[i] = get_average_ping_time(current_interface, str(NUM_PINGS_TO_AVERAGE))
 			#print(" ping time[" + str(i) + "]:" + str(ping_time_wwan[i]))
 
@@ -226,7 +228,7 @@ while(1):
 					g_total_duration1.set(total_duration_min)
 					g_ping_time_to_server1.set(ping_time_wwan[i])
 					h_ping_time_to_server1.observe(ping_time_wwan[i])
-					print("   ping tine 1: ", ping_time_wwan[i])
+					#print("   ping time 1: ", ping_time_wwan[i])
 
 				else:   # modem 2
 					g_signal_strength2.set(int(list_all_stats[i]['current_signal_strength'][:2]))
@@ -248,7 +250,7 @@ while(1):
 					g_total_duration2.set(total_duration_min)
 					g_ping_time_to_server2.set(ping_time_wwan[i])
 					h_ping_time_to_server2.observe(ping_time_wwan[i])
-					print("   ping tine 2: ", ping_time_wwan[i])
+					#print("   ping time 2: ", ping_time_wwan[i])
 
 			except:
 				print("\n Error!  Unable to write db values\n", sys.exc_info())
