@@ -9,11 +9,21 @@
 import subprocess
 import pdb
 import sys
+import linecache
 MODEM_NUMBER_LOCATION = 4
 MODEM_NUMBER_IN_LINE = 5
 PING_SERVER_IP = "8.8.8.8"
 locked_status = "Not Locked"
 connected_status = "Not Connected"
+
+def PrintException():
+    exc_type, exc_obj, tb = sys.exc_info()
+    f = tb.tb_frame
+    lineno = tb.tb_lineno
+    filename_exc = f.f_code.co_filename
+    linecache.checkcache(filename_exc)
+    line = linecache.getline(filename_exc, lineno, f.f_globals)
+    print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename_exc, lineno, line.strip(), exc_obj))
 
 # set up python command to send shell commands with return data
 def send_cmd_to_gw_modemmgr(cmd):
@@ -79,13 +89,14 @@ def parse_data_section(list_output):
 
 
 # ping server using a specific modem interface
-# collect 5 ping samples and average them 
-def get_average_ping_time(interface, num_pings_to_average):
-    cmd = "sudo ping -I " + interface + " "  + PING_SERVER_IP + "  -c " + num_pings_to_average
+# collect ping samples and average them
+def get_average_ping_time(interface, num_pings_to_average, ip_addr=PING_SERVER_IP):
+    
+    cmd = "ping -I " + interface + " "  + ip_addr + "  -c " + num_pings_to_average
     output_string = (send_cmd_to_gw_modemmgr(cmd))
     #print(output_string)
 
-    search_string = "bytes from " + PING_SERVER_IP
+    search_string = "bytes from " + ip_addr
     if search_string in output_string:
         lines = output_string.splitlines()
         lines_with_search_string = [x.split(" ")[-2:-1]  for x in lines  if search_string in x]
@@ -97,6 +108,7 @@ def get_average_ping_time(interface, num_pings_to_average):
 
     else:
         return -1
+
 
 # for the mmcli commands, extract the parameters for storage
 def parse_data_section(list_output):
@@ -374,10 +386,11 @@ def get_modem_stats():
 
             else:
                 print(" Error! No Statistics section in modem_bearer_info")
-
+                PrintException()
 
         except:
             print(" Error! Could not get bearer data ")
+            PrintException()
 
         for key in dict_all_modem_stats:
             print("         ", key, ": ", dict_all_modem_stats[key])

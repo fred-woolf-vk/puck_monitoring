@@ -5,7 +5,7 @@
 # Copyright Vertical Knowledge, Inc.
 # version 1.0
 #**************************************************************/
-from prometheus_client import start_http_server, Summary, Info, Gauge, Counter, Histogram
+from prometheus_client import start_http_server, Summary, Info, Gauge, Counter, Histogram, CollectorRegistry
 import datetime
 import time
 from get_modem_status import *
@@ -15,8 +15,8 @@ import pdb
 
 print(" prometheus gw6200 exporter")
 
-DATA_COLLECTION_INTERVAL_IN_SECS = 15
-NUM_PINGS_TO_AVERAGE = 5
+DATA_COLLECTION_INTERVAL_IN_SECS = 5
+NUM_PINGS_TO_AVERAGE = 2
 
 remote_server_ip_address = '8.8.4.4'
 
@@ -28,9 +28,12 @@ print(" Modem Script started on ", prev_time.ctime())
 total_time_in_secs_script_running = 1
 time_increment_in_sec_Modem = 1
 
-start_http_server(8082)
+registry1 = CollectorRegistry()
+start_http_server(8082, registry=registry1)
 time.sleep(1)
 # this calculates the 'Availability' percentage
+
+
 def calculate_percentage_uptime(modem_num, stats_connected, locked):
 	global total_time_in_secs_script_running, prev_time, time_increment_in_sec_Modem
 	if modem_num == '1': modem_num = "Modem 1"
@@ -51,6 +54,7 @@ def calculate_percentage_uptime(modem_num, stats_connected, locked):
 	percentage_uptime = total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running
 	return percentage_uptime
 
+
 def get_config_params():
 	global remote_server_ip_address
 	print(" params from param file:")
@@ -66,41 +70,78 @@ def get_config_params():
 					print(" wrote ", param_name+':'+param)
 
 
-
-g_signal_strength1 = Gauge('gw6200_signal_strength1', 'Modem 1')
-g_signal_strength2 = Gauge('gw6200_signal_strength2', 'Modem 2')
-g_duration1 = Gauge('gw6200_duration1', 'Modem 1')
-g_duration2 = Gauge('gw6200_duration2', 'Modem 2')
-g_total_duration1 = Gauge('gw6200_total_duration1', 'Modem 1')
-g_total_duration2 = Gauge('gw6200_total_duration2', 'Modem 2')
-g_bytes_tx1 = Gauge('gw6200_bytes_transmitted1', 'Modem 1')
-g_total_bytes_tx1 = Gauge('gw6200_total_bytes_transmitted1', 'Modem 1')
-g_bytes_rx1 = Gauge('gw6200_bytes_received1', 'Modem 1')
-g_total_bytes_rx1 = Gauge('gw6200_total_bytes_received1', 'Modem 1')
+g_signal_strength1 = Gauge('gw6200_signal_strength1', 'Modem 1', registry=registry1)
+g_signal_strength2 = Gauge('gw6200_signal_strength2', 'Modem 2', registry=registry1)
+g_duration1 = Gauge('gw6200_duration1', 'Modem 1', registry=registry1)
+g_duration2 = Gauge('gw6200_duration2', 'Modem 2', registry=registry1)
+g_total_duration1 = Gauge('gw6200_total_duration1', 'Modem 1', registry=registry1)
+g_total_duration2 = Gauge('gw6200_total_duration2', 'Modem 2', registry=registry1)
+g_bytes_tx1 = Gauge('gw6200_bytes_transmitted1', 'Modem 1', registry=registry1)
+g_total_bytes_tx1 = Gauge('gw6200_total_bytes_transmitted1', 'Modem 1', registry=registry1)
+g_bytes_rx1 = Gauge('gw6200_bytes_received1', 'Modem 1', registry=registry1)
+g_total_bytes_rx1 = Gauge('gw6200_total_bytes_received1', 'Modem 1', registry=registry1)
 g_bytes_tx2 = Gauge('gw6200_bytes_transmitted2', 'Modem 2')
-g_total_bytes_tx2 = Gauge('gw6200_total_bytes_transmitted2', 'Modem 2')
-g_bytes_rx2 = Gauge('gw6200_bytes_received2', 'Modem 2')
-g_total_bytes_rx2 = Gauge('gw6200_total_bytes_received2', 'Modem 2')
-i_modem_info1 = Info("gw6200_modem_info1", 'Modem 1')
-i_modem_info2 = Info("gw6200_modem_info2", 'Modem 2')
-i_remote_server_ip = Info("gw6200_modem_remote_server_ip", 'Modem 1')
-g_percent_uptime1 = Gauge('gw6200_percent_uptime1', 'Modem 1')
-g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2')
-g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1')
-g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2')
-h_ping_time_to_server1 = Histogram('gw6200_ping_time_histogram1', 'Modem 1', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')])
-h_ping_time_to_server2 = Histogram('gw6200_ping_time_histogram2', 'Modem 2', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')])
-i_modem_number_1 = Info("gw6200_modem_number1", 'Modem 1')
-i_modem_number_2 = Info("gw6200_modem_number2", 'Modem 2')
+g_total_bytes_tx2 = Gauge('gw6200_total_bytes_transmitted2', 'Modem 2', registry=registry1)
+g_bytes_rx2 = Gauge('gw6200_bytes_received2', 'Modem 2', registry=registry1)
+g_total_bytes_rx2 = Gauge('gw6200_total_bytes_received2', 'Modem 2', registry=registry1)
+i_modem_info1 = Info("gw6200_modem_info1", 'Modem 1', registry=registry1)
+i_modem_info2 = Info("gw6200_modem_info2", 'Modem 2', registry=registry1)
+i_remote_server_ip = Info("gw6200_modem_remote_server_ip", 'Modem 1', registry=registry1)
+g_percent_uptime1 = Gauge('gw6200_percent_uptime1', 'Modem 1', registry=registry1)
+g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2', registry=registry1)
+
+g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1', registry=registry1)
+g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2', registry=registry1)
+
+g_ping_time_to_tunnel_ip1 = Gauge('gw6200_ping_time_to_tunnel_ip1', 'Modem 1', registry=registry1)
+g_ping_time_to_tunnel_ip2 = Gauge('gw6200_ping_time_to_tunnel_ip2', 'Modem 1', registry=registry1)
+g_ping_time_to_tunnel_ip3 = Gauge('gw6200_ping_time_to_tunnel_ip3', 'Modem 2', registry=registry1)
+g_ping_time_to_tunnel_ip4 = Gauge('gw6200_ping_time_to_tunnel_ip4', 'Modem 2', registry=registry1)
+
+h_ping_time_to_server1 = Histogram('gw6200_ping_time_histogram1',
+		'Modem 1', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')], registry=registry1)
+h_ping_time_to_server2 = Histogram('gw6200_ping_time_histogram2',
+		'Modem 2', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')], registry=registry1)
+i_modem_number_1 = Info("gw6200_modem_number1", 'Modem 1', registry=registry1)
+i_modem_number_2 = Info("gw6200_modem_number2", 'Modem 2', registry=registry1)
+
+g_tunnel_ping_times = Gauge(
+	'gw6200_tunnel_ping_times',
+	'Gw6200_tunnel_ping_times',
+	['tunnel'],
+	registry=registry1
+)
+
 
 get_config_params()
+
 
 while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
+		print(" call test_multiple")
+		#test_multiple_g()
+
 		list_all_stats = get_modem_stats()
 		print("\n", list_all_stats, "\n")
+
+		tunnel_interface_for_ping = 'scatr102-4'
+		tunnel_num_pings_to_average = '2'
+		'''g_ping_time_to_tunnel_ip1.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.1.5'))
+		g_ping_time_to_tunnel_ip2.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.2.5'))
+		g_ping_time_to_tunnel_ip3.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.3.5'))
+		g_ping_time_to_tunnel_ip4.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.4.5'))
+		'''
+		g_tunnel_ping_times.labels(
+					'tunnel1').set(get_average_ping_time('scatr102-1', tunnel_num_pings_to_average, ip_addr='10.102.1.5'))
+		g_tunnel_ping_times.labels(
+					'tunnel2').set(get_average_ping_time('scatr102-2', tunnel_num_pings_to_average, ip_addr='10.102.2.5'))
+		g_tunnel_ping_times.labels(
+					'tunnel3').set(get_average_ping_time('scatr102-3', tunnel_num_pings_to_average, ip_addr='10.102.3.5'))
+		g_tunnel_ping_times.labels(
+					'tunnel4').set(get_average_ping_time('scatr102-4', tunnel_num_pings_to_average, ip_addr='10.102.4.5'))
+
 		for i in range(len(list_all_stats)):
 			current_interface = list_all_stats[i]["interface"]
 			current_modem_number = list_all_stats[i]["current_modem_number"]
@@ -225,7 +266,8 @@ while(1):
 		prev_time = datetime.datetime.now()
 
 
-		time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - NUM_PINGS_TO_AVERAGE - 1)
+		#time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - NUM_PINGS_TO_AVERAGE - 1)
+		time.sleep(1)  # extra sleep time to do pings is separate from this
 
 
 
