@@ -15,6 +15,7 @@ MODEM_NUMBER_IN_LINE = 5
 PING_SERVER_IP = "8.8.8.8"
 locked_status = "Not Locked"
 connected_status = "Not Connected"
+stun_number = 0
 
 def PrintException():
     exc_type, exc_obj, tb = sys.exc_info()
@@ -29,6 +30,16 @@ def PrintException():
 def send_cmd_to_gw_modemmgr(cmd):
     stdoutdata = subprocess.getoutput(cmd)
     return stdoutdata
+
+def get_network_stun_number():
+    cmd = "ifconfig | grep scatr"
+    lines = (send_cmd_to_gw_modemmgr(cmd)).splitlines()
+    #print(lines)
+    if 'scatr' in lines[0]:
+        return lines[0].split('-')[0].split('scatr')[-1]
+    else:
+        print("Error finding stun number!")
+        return 0
 
 def parse_data_section(list_output):
     list_of_all_section_data = []
@@ -181,7 +192,7 @@ def get_modem_stats():
 
     cmd = "mmcli --list-modems"
     output_list = (send_cmd_to_gw_modemmgr(cmd))
-    print(output_list)
+    #print(output_list)
     list_modems = list((output_list).split("\n"))
 
     for modem_list in range(0, len(list_modems)):
@@ -236,7 +247,7 @@ def get_modem_stats():
                     if 'dbus path' in dict_modem_info['Bearer']:
                         bearer_number = dict_modem_info['Bearer']['dbus path']
                         bearer_number = bearer_number.split('/')[-1:][0]
-                        print(" bearer_number for Modem ", current_modem_number, " is ", bearer_number)
+                        #print(" bearer_number for Modem ", current_modem_number, " is ", bearer_number)
 
                         cmd = "mmcli --bearer " + bearer_number
                         list_output_bearer_info = list(send_cmd_to_gw_modemmgr(cmd).splitlines())
@@ -244,7 +255,7 @@ def get_modem_stats():
                             print(" Error in reading bearer data for Modem ", current_modem_number)
 
                         dict_bearer_info = parse_data_section(list_output_bearer_info)
-                        print("  bearer data for Modem ", current_modem_number, ":\n", list_output_bearer_info)
+                        #print("  bearer data for Modem ", current_modem_number, ":\n", list_output_bearer_info)
                         #print(dict_bearer_info)
                 else:
                     print(" Error!  No Bearer number available for modem #", current_modem_number)
@@ -255,7 +266,7 @@ def get_modem_stats():
         try:
             # get keys from dictionary to develop list of all param data available
             modem_info_sections = list(dict_modem_info.keys())
-            print(" modem info sections for Modem ", modem_info_sections)
+            #print(" modem info sections for Modem ", modem_info_sections)
 
             if "Hardware" in modem_info_sections:
                 list_modem_info_Hardware_section_params = list(dict_modem_info["Hardware"].keys())
@@ -392,8 +403,8 @@ def get_modem_stats():
             print(" Error! Could not get bearer data ")
             PrintException()
 
-        for key in dict_all_modem_stats:
-            print("         ", key, ": ", dict_all_modem_stats[key])
+        #for key in dict_all_modem_stats:
+        #    print("         ", key, ": ", dict_all_modem_stats[key])
 
         list_dict_all_modem_stats.append(dict_all_modem_stats)
         # print(list_dict_all_modem_stats)
