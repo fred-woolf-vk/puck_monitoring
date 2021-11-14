@@ -15,6 +15,9 @@ echo "--------------------------------------------------------------------------
 mkdir -p /home/user/gw6200_scripts
 chmod 755 /home/user/gw6200_scripts
 cd /home/user/gw6200_scripts
+systemctl stop prometheus
+systemctl stop prometheus
+systemctl stop prometheus-node-exporter
 rm -f *.1
 rm -f collect_db_stats_prometheus.py
 rm -f get_modem_status.py
@@ -24,6 +27,7 @@ rm -f gw6200_exporter_params.txt
 rm -f gw6200_monitoring_script.sh
 rm -f update_monitoring_scripts_from_repo.sh
 rm -f configure_prometheus.py
+rm -f scan_cell_network.py
 
 echo "--------------------------------------------------------------------------------"
 wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/collect_db_stats_prometheus.py
@@ -34,12 +38,15 @@ wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/g
 wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/gw6200_monitoring_script.sh
 wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/update_monitoring_scripts_from_repo.sh
 wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/configure_prometheus.py
+wget -N https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/scan_cell_network.py
+
 echo "--------------------------------------------------------------------------------"
 
 chmod 755 gw6200_monitoring_script.sh
 chmod 755 update_monitoring_scripts_from_repo.sh
 chmod 755 collect_db_stats_prometheus.py
 chmod 755 get_modem_status.py
+chmod 755 scan_cell_network.py
 mv prometheus.yml /etc/prometheus/
 chmod 755 /etc/prometheus/prometheus.yml
 
