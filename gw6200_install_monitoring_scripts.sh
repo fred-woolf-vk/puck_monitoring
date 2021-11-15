@@ -15,7 +15,7 @@ echo "--------------------------------------------------------------------------
 mkdir -p /home/user/gw6200_scripts
 chmod 755 /home/user/gw6200_scripts
 cd /home/user/gw6200_scripts
-systemctl stop prometheus
+systemctl stop gw6200_exporter
 systemctl stop prometheus
 systemctl stop prometheus-node-exporter
 rm -f *.1
