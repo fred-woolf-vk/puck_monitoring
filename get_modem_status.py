@@ -10,12 +10,15 @@ import subprocess
 import pdb
 import sys
 import linecache
+import re
+
 MODEM_NUMBER_LOCATION = 4
 MODEM_NUMBER_IN_LINE = 5
 PING_SERVER_IP = "8.8.8.8"
 locked_status = "Not Locked"
 connected_status = "Not Connected"
 stun_number = 0
+
 
 def PrintException():
     exc_type, exc_obj, tb = sys.exc_info()
@@ -26,20 +29,51 @@ def PrintException():
     line = linecache.getline(filename_exc, lineno, f.f_globals)
     print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename_exc, lineno, line.strip(), exc_obj))
 
+
 # set up python command to send shell commands with return data
 def send_cmd_to_gw_modemmgr(cmd):
     stdoutdata = subprocess.getoutput(cmd)
     return stdoutdata
 
+
+def get_relay_node_ip_addr(stun_number, tunnel_num):
+    cmd = 'ps -ax | grep socat' + stun_number + '-' + str(tunnel_num)
+    data = send_cmd_to_gw_modemmgr(cmd)
+    #print(data)
+    data = data.splitlines()
+    for line in data:
+        if 'socat -T0 UDP:' in line:
+            ip_addr_relay_node = line.split('socat -T0 UDP:')[1].split(':')[0]
+            #print("ip addr:", ip_addr_relay_node)
+            return ip_addr_relay_node
+
+    return '0'
+
+
+# get init relay ip addresses for verification
+def get_relay_nodes_ip_addr(stun_number):
+    relay_nodes_ip_addr = []
+    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 1))
+    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 2))
+    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 3))
+    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 4))
+    print("relay nodes: ", relay_nodes_ip_addr)
+    return relay_nodes_ip_addr
+
+
 def get_network_stun_number():
     cmd = "ifconfig | grep scatr"
     lines = (send_cmd_to_gw_modemmgr(cmd)).splitlines()
     #print(lines)
-    if 'scatr' in lines[0]:
-        return lines[0].split('-')[0].split('scatr')[-1]
+    if len(lines) > 0:
+        if 'scatr' in lines[0]:
+            return lines[0].split('-')[0].split('scatr')[-1]
+        else:
+            print("Error finding stun number!")
+            return '0'
     else:
-        print("Error finding stun number!")
         return 0
+
 
 def parse_data_section(list_output):
     list_of_all_section_data = []
@@ -84,7 +118,6 @@ def parse_data_section(list_output):
                     if len(list_of_all_section_data[j]) > k and ':' in list_of_all_section_data[j][k]:
                         element = list_of_all_section_data[j][k].strip().split('|')[1].strip()
                         dict_data_elements_this_section[element.split(':')[0]] = element.split(':')[1].strip()
-                        dict_data_elements_this_section[element.split(':')[0]] = element.split(':')[1].strip()
                         element_index = 0
                     else:
                         dict_data_elements_this_section[element.split(':')[0].strip() + str(element_index + 1)] = \
@@ -103,7 +136,7 @@ def parse_data_section(list_output):
 # collect ping samples and average them
 def get_average_ping_time(interface, num_pings_to_average, ip_addr=PING_SERVER_IP):
     
-    cmd = "ping -I " + interface + " "  + ip_addr + "  -c " + num_pings_to_average
+    cmd = "ping -I " + interface + ' ' + ip_addr + "  -c " + num_pings_to_average
     output_string = (send_cmd_to_gw_modemmgr(cmd))
     #print(output_string)
 
@@ -114,70 +147,11 @@ def get_average_ping_time(interface, num_pings_to_average, ip_addr=PING_SERVER_I
         #print("str: ", lines_with_search_string[0][0], lines_with_search_string[0][0].split("=")[-1:][0])
         line_pings = [float(x[0].split("=")[-1:][0]) for x in lines_with_search_string]
         #print(" lines str:",line_pings)
-        #print(" ping time i/f",interface, "= ", str(sum(line_pings)/len(line_pings))) 
+        #print(" ping time i/f",interface, "= ", str(sum(line_pings)/len(line_pings)))
         return sum(line_pings)/len(line_pings)
 
     else:
         return -1
-
-
-# for the mmcli commands, extract the parameters for storage
-def parse_data_section(list_output):
-    list_of_all_section_data = []
-    # print(" list output modem status ", list_output)
-    lines_in_modem_display = [x for x in list_output]
-    # lines_in_modem_display.append(" ")  # create extra line for parsing
-
-    pass
-    # identify all section boundaries by ----------------------
-    # list_start_of_section_by_row_num is a list of row numbers; points to the first row of each section, after the ------ separator
-    try:
-        list_start_of_section_by_row_num = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "----" in x]
-        list_start_of_section_by_row_num = [x[0] for x in list_start_of_section_by_row_num]
-        last_item = list_start_of_section_by_row_num[len(list_start_of_section_by_row_num) - 1]
-
-        list_start_of_section_by_row_num.append(
-            len(lines_in_modem_display))  # create dummy start of last section for parsing
-
-        # get list of each section data as list
-        # list[each section[data for each section, one line per list element]]
-        len_list_start_of_section_by_row_num = len(list_start_of_section_by_row_num)
-        for j in range(len(list_start_of_section_by_row_num) - 1):
-            list_of_all_section_data.append(
-                lines_in_modem_display[list_start_of_section_by_row_num[j] + 1:list_start_of_section_by_row_num[j + 1]])
-        # print(lines_in_modem_display)
-    except:
-        print(" error in parse_data_section, get list of each section data as list", "\n", sys.exc_info())
-
-    try:
-        # get each element in data section from list_of_all_section_data and place in dictionary
-        dict_all_data_elements = {}
-        for j in range(len(list_of_all_section_data)):
-            if len(list_of_all_section_data[j]) > 0 and '|' in list_of_all_section_data[j][0]:
-                dict_data_elements_this_section = {}
-                section_name = list_of_all_section_data[j][0].strip().split('|')[0].strip()
-                # dict_data_elements_this_section['section_name'] = section_name
-
-                element = ''
-                element_index = 0
-                for k in range(len(list_of_all_section_data[j])):
-                    # element will have thislen(list_of_all_section_data[j]) type data: 'manufacturer: QUALCOMM INCORPORATED'
-                    # if there is no element name, such as happens in System section, repeat the element name
-                    if len(list_of_all_section_data[j]) > k and ':' in list_of_all_section_data[j][k]:
-                        element = list_of_all_section_data[j][k].strip().split('|')[1].strip()
-                        dict_data_elements_this_section[element.split(':')[0].strip()] = element.split(':')[1].strip()
-                        element_index = 0
-                    else:
-                        dict_data_elements_this_section[element.split(':')[0].strip() + str(element_index + 1)] = \
-                            list_of_all_section_data[j][k].strip().split('|')[1].strip()
-
-                dict_all_data_elements[section_name] = dict_data_elements_this_section
-
-        return dict_all_data_elements
-
-
-    except:
-        print(" error in parse_data_section, et each element in data section", "\n", sys.exc_info())
 
 
 def get_modem_stats():
@@ -193,7 +167,7 @@ def get_modem_stats():
     cmd = "mmcli --list-modems"
     output_list = (send_cmd_to_gw_modemmgr(cmd))
     #print(output_list)
-    list_modems = list((output_list).split("\n"))
+    list_modems = list(output_list.split("\n"))
 
     for modem_list in range(0, len(list_modems)):
         if list_modems[modem_list] != '':
@@ -277,7 +251,6 @@ def get_modem_stats():
                     print(" no carrier config found for Modem ", current_modem_number)
             else:
                 print(" no Hardware section found for Modem ", current_modem_number)
-
 
             if "Status" in modem_info_sections:
                 list_modem_info_Status_section_params = list(dict_modem_info["Status"].keys())
@@ -408,7 +381,6 @@ def get_modem_stats():
 
         list_dict_all_modem_stats.append(dict_all_modem_stats)
         # print(list_dict_all_modem_stats)
-
 
     return list_dict_all_modem_stats
 

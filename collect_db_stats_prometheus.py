@@ -93,11 +93,6 @@ g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2', registry=registry
 g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1', registry=registry1)
 g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2', registry=registry1)
 
-g_ping_time_to_tunnel_ip1 = Gauge('gw6200_ping_time_to_tunnel_ip1', 'Modem 1', registry=registry1)
-g_ping_time_to_tunnel_ip2 = Gauge('gw6200_ping_time_to_tunnel_ip2', 'Modem 1', registry=registry1)
-g_ping_time_to_tunnel_ip3 = Gauge('gw6200_ping_time_to_tunnel_ip3', 'Modem 2', registry=registry1)
-g_ping_time_to_tunnel_ip4 = Gauge('gw6200_ping_time_to_tunnel_ip4', 'Modem 2', registry=registry1)
-
 h_ping_time_to_server1 = Histogram('gw6200_ping_time_histogram1',
 		'Modem 1', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')], registry=registry1)
 h_ping_time_to_server2 = Histogram('gw6200_ping_time_histogram2',
@@ -114,6 +109,9 @@ g_tunnel_ping_times = Gauge(
 
 get_config_params()
 stun_number = get_network_stun_number()
+relay_nodes_base_ip_addr = get_relay_nodes_ip_addr(stun_number)
+print("base relay nodes ip:", relay_nodes_base_ip_addr)
+
 if stun_number == 0:
 	print("Error in getting stun-number!")
 	raise Exception("Exception in getting stun-number!")
@@ -126,23 +124,33 @@ while(1):
 
 		list_all_stats = get_modem_stats()
 		#print("\n", list_all_stats, "\n")
-
+		tunnel_ip_addr_prefix = 0
 		tunnel_interface_for_ping = 'scatr' + stun_number
+		if int(stun_number) < 10:
+			tunnel_ip_addr_prefix  = '10.' + stun_number + '.'
+		else:
+			tunnel_ip_addr_prefix = '10.' + stun_number + '.'
+
 		tunnel_num_pings_to_average = '2'
-		'''g_ping_time_to_tunnel_ip1.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.1.5'))
-		g_ping_time_to_tunnel_ip2.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.2.5'))
-		g_ping_time_to_tunnel_ip3.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.3.5'))
-		g_ping_time_to_tunnel_ip4.set(get_average_ping_time(tunnel_interface_for_ping, num_pings_to_average, ip_addr='10.102.4.5'))
-		'''
+
 		print(tunnel_interface_for_ping + '-1')
 		g_tunnel_ping_times.labels(
-					'tunnel1').set(get_average_ping_time(tunnel_interface_for_ping + '-1', tunnel_num_pings_to_average, ip_addr='10.102.1.5'))
+					'tunnel1').set(get_average_ping_time(tunnel_interface_for_ping + '-1', tunnel_num_pings_to_average,
+						ip_addr=tunnel_ip_addr_prefix + '1.5'))
 		g_tunnel_ping_times.labels(
-					'tunnel2').set(get_average_ping_time(tunnel_interface_for_ping + '-2', tunnel_num_pings_to_average, ip_addr='10.102.2.5'))
+					'tunnel2').set(get_average_ping_time(tunnel_interface_for_ping + '-2', tunnel_num_pings_to_average,
+						ip_addr=tunnel_ip_addr_prefix + '2.5'))
 		g_tunnel_ping_times.labels(
-					'tunnel3').set(get_average_ping_time(tunnel_interface_for_ping + '-3', tunnel_num_pings_to_average, ip_addr='10.102.3.5'))
+					'tunnel3').set(get_average_ping_time(tunnel_interface_for_ping + '-3', tunnel_num_pings_to_average,
+						ip_addr=tunnel_ip_addr_prefix + '3.5'))
 		g_tunnel_ping_times.labels(
-					'tunnel4').set(get_average_ping_time(tunnel_interface_for_ping + '-4', tunnel_num_pings_to_average, ip_addr='10.102.4.5'))
+					'tunnel4').set(get_average_ping_time(tunnel_interface_for_ping + '-4', tunnel_num_pings_to_average,
+						ip_addr=tunnel_ip_addr_prefix + '4.5'))
+
+		# verify all relay nodes are same as init relay node config
+		status_relay_nodes = relay_nodes_base_ip_addr == get_relay_nodes_ip_addr(stun_number)
+		print(" base relay nodes ip: ", relay_nodes_base_ip_addr, "status relay nodes: ", status_relay_nodes)
+		g_tunnel_ping_times.labels('status_relay_nodes1').set(status_relay_nodes)
 
 		for i in range(len(list_all_stats)):
 			current_interface = list_all_stats[i]["interface"]
@@ -156,7 +164,7 @@ while(1):
 			duration_min = -1
 			total_duration_min = -1
 			try:
-				duration_min = (int(list_all_stats[i]['duration']))/60  #change default seconds to minutes for display
+				duration_min = (int(list_all_stats[i]['duration']))/60  # change default seconds to minutes for display
 				#print("duration_min0 = ", duration_min0)
 			except:
 				print(" error in duration0 value", sys.exc_info() )
@@ -255,7 +263,6 @@ while(1):
 			except:
 				print("\n Error!  Unable to write db values\n", sys.exc_info())
 
-
 		# set time calculations for the next iteration
 		time_increment_in_sec_Modem = datetime.datetime.now() - prev_time
 		#print("time_increment_in_sec_Modem:", time_increment_in_sec_Modem, "  type:", type(time_increment_in_sec_Modem))
@@ -266,7 +273,6 @@ while(1):
 		#print("2 total_time  :", total_time_in_secs_script_running)
 
 		prev_time = datetime.datetime.now()
-
 
 		#time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - NUM_PINGS_TO_AVERAGE - 1)
 		time.sleep(1)  # extra sleep time to do pings is separate from this
