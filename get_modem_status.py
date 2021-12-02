@@ -72,7 +72,7 @@ def get_network_stun_number():
             print("Error finding stun number!")
             return '0'
     else:
-        return 0
+        return '0'
 
 
 def parse_data_section(list_output):
@@ -370,7 +370,6 @@ def get_modem_stats():
 
             else:
                 print(" Error! No Statistics section in modem_bearer_info")
-                PrintException()
 
         except:
             print(" Error! Could not get bearer data ")

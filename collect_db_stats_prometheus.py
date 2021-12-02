@@ -122,7 +122,12 @@ while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
-		list_all_stats = get_modem_stats()
+		list_all_stats = []
+		try:
+			list_all_stats = get_modem_stats()
+		except:
+			print("Error: could not get modem stats")
+			PrintException()
 		#print("\n", list_all_stats, "\n")
 		tunnel_ip_addr_prefix = 0
 		tunnel_interface_for_ping = 'scatr' + stun_number
