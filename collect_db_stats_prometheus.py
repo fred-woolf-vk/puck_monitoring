@@ -122,12 +122,7 @@ while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
-		list_all_stats = []
-		try:
-			list_all_stats = get_modem_stats()
-		except:
-			print("Error: could not get modem stats")
-			PrintException()
+		list_all_stats = get_modem_stats()
 		#print("\n", list_all_stats, "\n")
 		tunnel_ip_addr_prefix = 0
 		tunnel_interface_for_ping = 'scatr' + stun_number
@@ -222,8 +217,10 @@ while(1):
 				displayed_modem_number = str(int(list_all_stats[i]["current_modem_number"]) + 1)
 
 				if i == 0:  # modem 1
-					g_signal_strength1.set(int(list_all_stats[i]['current_signal_strength'][:2]))
-					g_duration1.set(float(duration_min)) # up time in minutes
+					print("sig:", list_all_stats[i]['current_signal_strength'])
+					#pdb.set_trace()
+					g_signal_strength1.set(int(list_all_stats[i]['current_signal_strength']))
+					g_duration1.set(float(duration_min)) # up 	time in minutes
 					g_bytes_tx1.set(float(list_all_stats[i]['bytesTx']))
 					g_bytes_rx1.set(float(list_all_stats[i]['bytesRx']))
 					g_total_bytes_tx1.set(float(list_all_stats[i]['total_bytesTx']))
@@ -244,7 +241,7 @@ while(1):
 					#print("   ping time 1: ", ping_time_wwan[i])
 
 				else:   # modem 2
-					g_signal_strength2.set(int(list_all_stats[i]['current_signal_strength'][:2]))
+					g_signal_strength2.set(int(list_all_stats[i]['current_signal_strength']))
 					g_duration2.set(float(duration_min)) # up time in minutes
 					g_bytes_tx2.set(float(list_all_stats[i]['bytesTx']))
 					g_bytes_rx2.set(float(list_all_stats[i]['bytesRx']))
