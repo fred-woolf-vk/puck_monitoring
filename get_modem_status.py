@@ -3,7 +3,7 @@
 # Author: Fred Woolf
 # Date:   Jan 18, 2021
 # Copyright Vertical Knowledge, Inc.
-# version 1.0
+# version 1.1
 #**************************************************************/
 
 import subprocess
@@ -36,38 +36,14 @@ def send_cmd_to_gw_modemmgr(cmd):
     return stdoutdata
 
 
-def get_relay_node_ip_addr(stun_number, tunnel_num):
-    cmd = 'ps -ax | grep socat' + stun_number + '-' + str(tunnel_num)
-    data = send_cmd_to_gw_modemmgr(cmd)
-    #print(data)
-    data = data.splitlines()
-    for line in data:
-        if 'socat -T0 UDP:' in line:
-            ip_addr_relay_node = line.split('socat -T0 UDP:')[1].split(':')[0]
-            #print("ip addr:", ip_addr_relay_node)
-            return ip_addr_relay_node
-
-    return '0'
-
-
-# get init relay ip addresses for verification
-def get_relay_nodes_ip_addr(stun_number):
-    relay_nodes_ip_addr = []
-    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 1))
-    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 2))
-    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 3))
-    relay_nodes_ip_addr.append(get_relay_node_ip_addr(stun_number, 4))
-    print("relay nodes: ", relay_nodes_ip_addr)
-    return relay_nodes_ip_addr
-
-
 def get_network_stun_number():
-    cmd = "ifconfig | grep scatr"
-    lines = (send_cmd_to_gw_modemmgr(cmd)).splitlines()
-    #print(lines)
-    if len(lines) > 0:
-        if 'scatr' in lines[0]:
-            return lines[0].split('-')[0].split('scatr')[-1]
+    # get stun number from hostname
+    cmd = "more /etc/hostname"
+    hostname = send_cmd_to_gw_modemmgr(cmd)
+    if len(hostname) > 0:
+        if 'stun' in hostname and '-' in hostname:
+            num = hostname.split('-')[1]
+            return num
         else:
             print("Error finding stun number!")
             return '0'
@@ -78,13 +54,13 @@ def get_network_stun_number():
 def parse_data_section(list_output):
     list_of_all_section_data = []
     #print(" list output modem status ", list_output)
-    lines_in_modem_display = [x for x in list_output]
-    #lines_in_modem_display.append(" ")  # create extra line for parsing
 
-    pass
     # identify all section boundaries by ----------------------
     # list_start_of_section_by_row_num is a list of row numbers; points to the first row of each section, after the ------ separator
     try:
+        lines_in_modem_display = [x for x in list_output]
+        # lines_in_modem_display.append(" ")  # create extra line for parsing
+
         list_start_of_section_by_row_num = [[ind, x] for ind, x in enumerate(lines_in_modem_display) if "----" in x]
         list_start_of_section_by_row_num = [x[0] for x in list_start_of_section_by_row_num]
         last_item = list_start_of_section_by_row_num[len(list_start_of_section_by_row_num) -1]

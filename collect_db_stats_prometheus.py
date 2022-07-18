@@ -3,7 +3,7 @@
 # Author: Fred Woolf
 # Date:   Jan 18, 2021
 # Copyright Vertical Knowledge, Inc.
-# version 1.0
+# version 1.1
 #**************************************************************/
 from prometheus_client import start_http_server, Summary, Info, Gauge, Counter, Histogram, CollectorRegistry
 import datetime
@@ -58,7 +58,7 @@ def calculate_percentage_uptime(modem_num, stats_connected, locked):
 def get_config_params():
 	global remote_server_ip_address
 	print(" params from param file:")
-	with open("gw6200_exporter_params.txt", 'r') as f:
+	with open("/home/user/gw6200_scripts/gw6200_exporter_params.txt", 'r') as f:
 		lines = f.readlines()
 		if len(lines) > 0:
 			for i in range(0, len(lines) - 1):
@@ -68,6 +68,25 @@ def get_config_params():
 				if param_name.find('remote_server_ip') != -1:
 					remote_server_ip_address = param
 					print(" wrote ", param_name+':'+param)
+
+def get_config_params_stunnel(stun_number):
+	print(" params from stunnel param file:")
+	filename = "/root/scatr2022/conf/stun." + stun_number + ".remote.conf"
+	print(filename)
+	with open(filename, 'r') as f:
+		lines = f.readlines()
+		filtered_lines = []
+		if len(lines) > 0:
+			for this_line in lines:
+				if "tunnelname" in this_line:
+					filtered_lines.append(this_line.strip())
+				if "tunnelipmask" in this_line:
+					filtered_lines.append(this_line.strip())
+				if "remote1" in this_line:
+					filtered_lines.append(this_line.strip())
+
+		print("params from stunnel param file:" , filtered_lines)
+		return filtered_lines
 
 
 g_signal_strength1 = Gauge('gw6200_signal_strength1', 'Modem 1', registry=registry1)
@@ -109,8 +128,6 @@ g_tunnel_ping_times = Gauge(
 
 get_config_params()
 stun_number = get_network_stun_number()
-relay_nodes_base_ip_addr = get_relay_nodes_ip_addr(stun_number)
-print("base relay nodes ip:", relay_nodes_base_ip_addr)
 
 if stun_number == 0:
 	print("Error in getting stun-number!")
@@ -118,39 +135,14 @@ if stun_number == 0:
 else:
 	print(" stun number = ", stun_number)
 
+#stunnel_config_params = get_config_params_stunnel(stun_number)
+
 while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
 		list_all_stats = get_modem_stats()
-		#print("\n", list_all_stats, "\n")
-		tunnel_ip_addr_prefix = 0
-		tunnel_interface_for_ping = 'scatr' + stun_number
-		if int(stun_number) < 10:
-			tunnel_ip_addr_prefix  = '10.' + stun_number + '.'
-		else:
-			tunnel_ip_addr_prefix = '10.' + stun_number + '.'
-
-		tunnel_num_pings_to_average = '2'
-
-		print(tunnel_interface_for_ping + '-1')
-		g_tunnel_ping_times.labels(
-					'tunnel1').set(get_average_ping_time(tunnel_interface_for_ping + '-1', tunnel_num_pings_to_average,
-						ip_addr=tunnel_ip_addr_prefix + '1.5'))
-		g_tunnel_ping_times.labels(
-					'tunnel2').set(get_average_ping_time(tunnel_interface_for_ping + '-2', tunnel_num_pings_to_average,
-						ip_addr=tunnel_ip_addr_prefix + '2.5'))
-		g_tunnel_ping_times.labels(
-					'tunnel3').set(get_average_ping_time(tunnel_interface_for_ping + '-3', tunnel_num_pings_to_average,
-						ip_addr=tunnel_ip_addr_prefix + '3.5'))
-		g_tunnel_ping_times.labels(
-					'tunnel4').set(get_average_ping_time(tunnel_interface_for_ping + '-4', tunnel_num_pings_to_average,
-						ip_addr=tunnel_ip_addr_prefix + '4.5'))
-
-		# verify all relay nodes are same as init relay node config
-		status_relay_nodes = relay_nodes_base_ip_addr == get_relay_nodes_ip_addr(stun_number)
-		print(" base relay nodes ip: ", relay_nodes_base_ip_addr, "status relay nodes: ", status_relay_nodes)
-		g_tunnel_ping_times.labels('status_relay_nodes1').set(status_relay_nodes)
+		print("\n", list_all_stats, "\n")
 
 		for i in range(len(list_all_stats)):
 			current_interface = list_all_stats[i]["interface"]
@@ -217,7 +209,7 @@ while(1):
 				displayed_modem_number = str(int(list_all_stats[i]["current_modem_number"]) + 1)
 
 				if i == 0:  # modem 1
-					print("sig:", list_all_stats[i]['current_signal_strength'])
+					print("Rsig:", list_all_stats[i]['current_signal_strength'])
 					#pdb.set_trace()
 					g_signal_strength1.set(int(list_all_stats[i]['current_signal_strength']))
 					g_duration1.set(float(duration_min)) # up 	time in minutes
