@@ -111,6 +111,7 @@ g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2', registry=registry
 
 g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1', registry=registry1)
 g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2', registry=registry1)
+g_ping_time_across_stunnel =Gauge("gw6200_ping_time_across_stunnel", 'Modem 1', registry=registry1)
 
 h_ping_time_to_server1 = Histogram('gw6200_ping_time_histogram1',
 		'Modem 1', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')], registry=registry1)
@@ -118,13 +119,6 @@ h_ping_time_to_server2 = Histogram('gw6200_ping_time_histogram2',
 		'Modem 2', buckets=[50, 60 ,70, 80, 90, 100, 200, 300, 500,float('inf')], registry=registry1)
 i_modem_number_1 = Info("gw6200_modem_number1", 'Modem 1', registry=registry1)
 i_modem_number_2 = Info("gw6200_modem_number2", 'Modem 2', registry=registry1)
-
-g_tunnel_ping_times = Gauge(
-	'gw6200_tunnel_ping_times',
-	'Gw6200_tunnel_ping_times',
-	['tunnel'],
-	registry=registry1
-)
 
 get_config_params()
 stun_number = get_network_stun_number()
@@ -144,6 +138,13 @@ while(1):
 		list_all_stats = get_modem_stats()
 		print("\n", list_all_stats, "\n")
 
+		# stun tunnel i/f
+		stun_tunnel_interface = "stun" + str(stun_number)
+		stun_tunnel_server = "10.0." + str(stun_number) + ".1"
+		stun_tunnel_avg_ping_time = get_average_ping_time(stun_tunnel_interface, "2",stun_tunnel_server)
+		print("stun tunnel ping time: ", stun_tunnel_avg_ping_time)
+		g_ping_time_across_stunnel.set(stun_tunnel_avg_ping_time)
+
 		for i in range(len(list_all_stats)):
 			current_interface = list_all_stats[i]["interface"]
 			current_modem_number = list_all_stats[i]["current_modem_number"]
@@ -162,28 +163,12 @@ while(1):
 				print(" error in duration0 value", sys.exc_info() )
 				duration_min = -1
 
-			'''try:
-				duration_min1 = (int(list_all_stats[1]['duration']))/60
-				#print("duration_min1 = ", duration_min1)
-			except:
-				print(" error in duration1 value", sys.exc_info() )
-				duration_min1 = -1
-			'''
 			try:
 				total_duration_min = (int(list_all_stats[i]['total_duration']))/60
 			except:
 				print(" error in  total_duration0", sys.exc_info())
 				total_duration_min = -1
-			'''
-			try:
-				total_duration_min = (int(list_all_stats[1]['total_duration']))/60
-			except:
-				print(" error in  total_duration1", sys.exc_info())
-				total_duration_min1 = -1
-			'''
 
-			#percent_uptime1 = (total_duration_min1)/(duration_min1)*100
-			#percent_uptime0 = (total_duration_min0)/(duration_min0)*100
 			# for each non-string element expected in the data from modem, if not in this current snapshot, set the value to -1
 			if 'current_signal_strength' not in list_all_stats[i].keys():
 				list_all_stats[i]['current_signal_strength'] = -1
@@ -268,8 +253,8 @@ while(1):
 
 		prev_time = datetime.datetime.now()
 
-		#time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - NUM_PINGS_TO_AVERAGE - 1)
-		time.sleep(1)  # extra sleep time to do pings is separate from this
+		time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - NUM_PINGS_TO_AVERAGE - 1)
+		#time.sleep(4)  # extra sleep time to do pings is separate from this
 
 
 

@@ -114,7 +114,7 @@ def get_average_ping_time(interface, num_pings_to_average, ip_addr=PING_SERVER_I
     
     cmd = "ping -I " + interface + ' ' + ip_addr + "  -c " + num_pings_to_average
     output_string = (send_cmd_to_gw_modemmgr(cmd))
-    #print(output_string)
+    print(output_string)
 
     search_string = "bytes from " + ip_addr
     if search_string in output_string:
