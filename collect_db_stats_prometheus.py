@@ -15,8 +15,9 @@ import pdb
 
 print(" prometheus gw6200 exporter")
 
-DATA_COLLECTION_INTERVAL_IN_SECS = 5
+DATA_COLLECTION_INTERVAL_IN_SECS = 15
 NUM_PINGS_TO_AVERAGE = 2
+STUNNEL_NUM_PINGS_TO_AVERAGE = 1
 
 remote_server_ip_address = '8.8.4.4'
 
@@ -141,7 +142,8 @@ while(1):
 		# stun tunnel i/f
 		stun_tunnel_interface = "stun" + str(stun_number)
 		stun_tunnel_server = "10.0." + str(stun_number) + ".1"
-		stun_tunnel_avg_ping_time = get_average_ping_time(stun_tunnel_interface, "2",stun_tunnel_server)
+		stun_tunnel_avg_ping_time = get_average_ping_time(stun_tunnel_interface,
+										str(STUNNEL_NUM_PINGS_TO_AVERAGE),stun_tunnel_server)
 		print("stun tunnel ping time: ", stun_tunnel_avg_ping_time)
 		g_ping_time_across_stunnel.set(stun_tunnel_avg_ping_time)
 

@@ -18,6 +18,7 @@ PING_SERVER_IP = "8.8.8.8"
 locked_status = "Not Locked"
 connected_status = "Not Connected"
 stun_number = 0
+import pdb
 
 
 def PrintException():
@@ -111,11 +112,12 @@ def parse_data_section(list_output):
 # ping server using a specific modem interface
 # collect ping samples and average them
 def get_average_ping_time(interface, num_pings_to_average, ip_addr=PING_SERVER_IP):
-    
-    cmd = "ping -I " + interface + ' ' + ip_addr + "  -c " + num_pings_to_average
+    # set timeout for 15 seconds; some network paths are showing large latencies
+    cmd = "timeout 15 ping -I " + interface + ' ' + ip_addr + "  -c " + num_pings_to_average
     output_string = (send_cmd_to_gw_modemmgr(cmd))
     print(output_string)
-
+    line_pings = []
+    lines = []
     search_string = "bytes from " + ip_addr
     if search_string in output_string:
         lines = output_string.splitlines()
