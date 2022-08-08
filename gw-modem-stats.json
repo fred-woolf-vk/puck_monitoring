@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 12,
-  "iteration": 1658191233716,
+  "iteration": 1659901832251,
   "links": [
     {
       "asDropdown": true,
@@ -2157,9 +2157,10 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
+        "type": "prometheus",
         "uid": "$Prometheus_DB_source"
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 5,
@@ -2169,6 +2170,108 @@
       },
       "hiddenSeries": false,
       "id": 34,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "8.3.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$Prometheus_DB_source"
+          },
+          "exemplar": true,
+          "expr": "gw6200_ping_time_to_server1",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "8.8.8.8",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$Prometheus_DB_source"
+          },
+          "exemplar": true,
+          "expr": "gw6200_ping_time_across_stunnel",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "ping time across stunnel",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Ping time to server",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:4021",
+          "format": "ms",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:4022",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$Prometheus_DB_source"
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "hiddenSeries": false,
+      "id": 42,
       "legend": {
         "avg": false,
         "current": false,
@@ -2196,7 +2299,12 @@
       "targets": [
         {
           "alias": "avg_ping_time_modem0",
-          "expr": "gw6200_ping_time_to_server1",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "mIS0Ekink"
+          },
+          "exemplar": true,
+          "expr": "gw6200_ping_time_to_server2",
           "groupBy": [
             {
               "params": [
@@ -2268,130 +2376,6 @@
           "$$hashKey": "object:4022",
           "format": "short",
           "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "$Prometheus_DB_source"
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 5,
-        "w": 12,
-        "x": 12,
-        "y": 23
-      },
-      "hiddenSeries": false,
-      "id": 42,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.3.4",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "avg_ping_time_modem0",
-          "expr": "gw6200_ping_time_to_server2",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "interval": "",
-          "legendFormat": "ping time",
-          "measurement": "uptime",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "queryType": "randomWalk",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "ping_time_avg_wwan0"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "modemName",
-              "operator": "=",
-              "value": "Modem 0"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Ping time to server",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:4021",
-          "format": "short",
-          "logBase": 1,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:4022",
-          "format": "short",
-          "logBase": 1,
           "min": "0",
           "show": true
         }
@@ -2401,7 +2385,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [],
@@ -2409,9 +2393,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "stun-5",
-          "value": "stun-5"
+          "selected": true,
+          "text": "stun-6",
+          "value": "stun-6"
         },
         "hide": 0,
         "includeAll": false,
@@ -2459,13 +2443,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "gw-modem-stats",
   "uid": "01",
-  "version": 10,
+  "version": 19,
   "weekStart": ""
 }
