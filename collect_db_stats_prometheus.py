@@ -35,24 +35,31 @@ time.sleep(1)
 # this calculates the 'Availability' percentage
 
 
-def calculate_percentage_uptime(modem_num, stats_connected, locked):
+def calculate_percentage_uptime(modem_num, modem_number_index, stats_connected, locked):
 	global total_time_in_secs_script_running, prev_time, time_increment_in_sec_Modem
-	if modem_num == '1': modem_num = "Modem 1"
-	if modem_num == '0': modem_num = "Modem 0"
+
+	if modem_number_index == 0: modem_num = "Modem 1"
+	if modem_number_index == 1: modem_num = "Modem 0"
+	percentage_uptime = 0
 
 	# if "connected" status in mmcli bearer is "yes" then add data collection interval to the total time available
 	#print("\n% 1 available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num], time_increment_in_sec_Modem)
 	#print(" connected  ", stats_connected, " locked: ", locked)
-	if 'yes' in stats_connected and 'yes' in locked:
-		total_available_time_in_secs_modems[modem_num] = total_available_time_in_secs_modems[modem_num] + time_increment_in_sec_Modem
+	try:
+		if 'yes' in stats_connected and 'yes' in locked:
+			total_available_time_in_secs_modems[modem_num] = total_available_time_in_secs_modems[modem_num] + time_increment_in_sec_Modem
 
-		#print("num secs = ", total_time_in_secs_script_running, "num_min = ", total_time_in_secs_script_running / 60)
-		#print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running)
-		#print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num])
-	else:
-		print("Warning: modem not connected")
+			#print("num secs = ", total_time_in_secs_script_running, "num_min = ", total_time_in_secs_script_running / 60)
+			#print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running)
+			#print("% available ",modem_num, ": ", total_available_time_in_secs_modems[modem_num])
+		else:
+			print("Warning: modem not connected")
 
-	percentage_uptime = total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running
+		percentage_uptime = total_available_time_in_secs_modems[modem_num]*100/total_time_in_secs_script_running
+
+	except:
+		print("\n Error in calculate_percentage_uptime\n", sys.exc_info())
+
 	return percentage_uptime
 
 
@@ -211,7 +218,7 @@ while(1):
 										"Operator":list_all_stats[i]['operator_name'],
 										"Modem_number":current_modem_number})
 					i_modem_number_1.info({"modem_number":current_modem_number})
-					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem_number,
+					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem_number, i,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
 					g_duration1.set(duration_min)
 					g_total_duration1.set(total_duration_min)
@@ -233,7 +240,7 @@ while(1):
 										"Operator":list_all_stats[i]['operator_name'],
 										"Modem_number":current_modem_number})
 					i_modem_number_2.info({"Modem_number":current_modem_number})
-					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem_number,
+					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem_number, i,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
 					g_duration2.set(duration_min)
 					g_total_duration2.set(total_duration_min)
