@@ -20,7 +20,7 @@ NUM_PINGS_TO_AVERAGE = 2
 STUNNEL_NUM_PINGS_TO_AVERAGE = 1
 
 remote_server_ip_address = '8.8.4.4'
-
+prev_time_for_loop = time.time()
 # init time tracking for percentage uptime stats
 total_available_time_in_secs_modems = {'Modem 0': 0, 'Modem 1': 0}
 ping_time_wwan = {'Modem 0': 0, 'Modem 1': 0}
@@ -143,12 +143,16 @@ while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
+		#pdb.set_trace()
 		list_all_stats = get_modem_stats()
 		print("\n", list_all_stats, "\n")
 
 		# stun tunnel i/f
 		stun_tunnel_interface = "stun" + str(stun_number)
 		stun_tunnel_server = "10.0." + str(stun_number) + ".1"
+		print("1: ", datetime.datetime.now())
+		#pdb.set_trace()
+		#print(datetime.datetime.now())
 		stun_tunnel_avg_ping_time = get_average_ping_time(stun_tunnel_interface,
 										str(STUNNEL_NUM_PINGS_TO_AVERAGE),stun_tunnel_server)
 		print("stun tunnel ping time: ", stun_tunnel_avg_ping_time)
@@ -260,9 +264,14 @@ while(1):
 		total_time_in_secs_script_running = total_time_in_secs_script_running + time_increment_in_sec_Modem
 		#print("2 total_time  :", total_time_in_secs_script_running)
 
-		prev_time = datetime.datetime.now()
+		time_diff = time.time() - prev_time_for_loop
+		print("time diff: ", time_diff)
 
-		time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - NUM_PINGS_TO_AVERAGE - 1)
+		prev_time_for_loop = time.time()
+		if time_diff < DATA_COLLECTION_INTERVAL_IN_SECS:
+			time.sleep(DATA_COLLECTION_INTERVAL_IN_SECS - int(time_diff))
+
+		sys.stdout.flush()
 		#time.sleep(4)  # extra sleep time to do pings is separate from this
 
 
