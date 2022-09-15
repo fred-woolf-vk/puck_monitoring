@@ -93,8 +93,15 @@ def parse_data_section(list_output):
                     # element will have this type data: 'manufacturer: QUALCOMM INCORPORATED'
                     # if there is no element name, such as happens in System section, repeat the element name
                     if len(list_of_all_section_data[j]) > k and ':' in list_of_all_section_data[j][k]:
-                        element = list_of_all_section_data[j][k].strip().split('|')[1].strip()
+                        full_element = element = list_of_all_section_data[j][k].strip().split('|')[1].strip()
                         dict_data_elements_this_section[element.split(':')[0]] = element.split(':')[1].strip()
+
+                        # special case for System:device with long line with multilple colons
+                        if 'device' in element and section_name == 'System':
+                            dict_data_elements_this_section[element.split(':')[0]] = "usb" + \
+                                                        full_element.split('usb')[1].split('/')[0]
+                            print(" element: usb", element)
+
                         element_index = 0
                     else:
                         dict_data_elements_this_section[element.split(':')[0].strip() + str(element_index + 1)] = \
@@ -137,8 +144,6 @@ def get_modem_stats():
     list_dict_all_modem_stats = []
     dict_bearer_info = {}
     dict_modem_info = {}
-    list_output_modem_info = []
-    list_output_bearer_info = []
     # print(output_list)
     num_modems_found = 0
 
@@ -156,7 +161,12 @@ def get_modem_stats():
     locked_status = "no"
 
     for modem_number in range(num_modems_found):
-        #pdb.set_trace()
+        list_output_bearer_info = []
+        list_output_modem_info = []
+        list_modem_bearer_Status_section_params = []
+        dict_bearer_info = []
+        dict_modem_info = []
+
         # dictionary which holds key:value pair for each modem parameter of interest
         # one dictionary for each Modem will be appended to the list_dict_all_modem_stats
         dict_all_modem_stats = {}
@@ -169,6 +179,10 @@ def get_modem_stats():
         dict_all_modem_stats["locked_status"] = 'no'
         dict_all_modem_stats["connected"] = 'no'
         dict_all_modem_stats["current_signal_strength"] = 0
+        dict_all_modem_stats['firmware'] = ''
+        dict_all_modem_stats['model'] = ''
+
+
         # get all mmcli data elements
         try:
             if "Modem" in current_line_in_modem_list[MODEM_NUMBER_LOCATION]:
@@ -195,6 +209,7 @@ def get_modem_stats():
 
                 #print(dict_modem_info)
                 bearer_number = -1
+                dict_bearer_info = []
                 if 'Bearer' in dict_modem_info:
                     if 'dbus path' in dict_modem_info['Bearer']:
                         bearer_number = dict_modem_info['Bearer']['dbus path']
@@ -227,8 +242,26 @@ def get_modem_stats():
                         dict_modem_info["Hardware"]["carrier config"].strip().split('%')[0]
                 else:
                     print(" no carrier config found for Modem ", current_modem_number)
+
+                if "firmware revision" in list_modem_info_Hardware_section_params:
+                    dict_all_modem_stats["firmware"] = \
+                        dict_modem_info["Hardware"]["firmware revision"].strip().split('%')[0]
+                else:
+                    print(" no firmware revision found for Modem ", current_modem_number)
+
+                if "model" in list_modem_info_Hardware_section_params:
+                    dict_all_modem_stats["model"] = \
+                        dict_modem_info["Hardware"]["model"].strip().split('%')[0]
+                else:
+                    print(" no model found for Modem ", current_modem_number)
+
             else:
                 print(" no Hardware section found for Modem ", current_modem_number)
+
+            if "System" in modem_info_sections:
+                list_modem_info_System_section_params = list(dict_modem_info["System"].keys())
+                if 'device'  in list_modem_info_System_section_params:
+                    dict_all_modem_stats["usb_loc"] = dict_modem_info["System"]['device']
 
             if "Status" in modem_info_sections:
                 list_modem_info_Status_section_params = list(dict_modem_info["Status"].keys())
@@ -254,7 +287,7 @@ def get_modem_stats():
             print(" Error in getting lock status; no entry in table for modem data - [Status][lock]")
 
         try:
-            # get keys from dictionary to carrier_confige and develop list of all param data available
+            # get keys from dictionary to carrier_config and develop list of all param data available
             modem_bearer_sections = list(dict_bearer_info.keys())
             if "Status" in modem_bearer_sections:
                 list_modem_bearer_Status_section_params = list(dict_bearer_info["Status"].keys())
@@ -279,7 +312,10 @@ def get_modem_stats():
         try:
             # bearer data of interest - Status section
             # get keys from dictionary to develop list of all param data available
-            list_modem_bearer_sections = list(dict_bearer_info.keys())
+
+            list_modem_bearer_sections = []
+            if len(dict_bearer_info):
+                list_modem_bearer_sections = list(dict_bearer_info.keys())
             dict_all_modem_stats["suspended"] = ''
             dict_all_modem_stats["interface"] = ''
             dict_all_modem_stats["ip_timeout"] = '0'

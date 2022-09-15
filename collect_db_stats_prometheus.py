@@ -3,7 +3,7 @@
 # Author: Fred Woolf
 # Date:   Jan 18, 2021
 # Copyright Vertical Knowledge, Inc.
-# version 1.1
+# version 1.2
 #**************************************************************/
 from prometheus_client import start_http_server, Summary, Info, Gauge, Counter, Histogram, CollectorRegistry
 import datetime
@@ -117,6 +117,14 @@ i_remote_server_ip = Info("gw6200_modem_remote_server_ip", 'Modem 1', registry=r
 g_percent_uptime1 = Gauge('gw6200_percent_uptime1', 'Modem 1', registry=registry1)
 g_percent_uptime2 = Gauge('gw6200_percent_uptime2', 'Modem 2', registry=registry1)
 
+'''i_modem_model1 = Info("gw6200_modem_model1", 'Modem 1', registry=registry1)
+i_modem_model2 = Info("gw6200_modem_model2", 'Modem 2', registry=registry1)
+i_modem_firmware1 = Info("gw6200_modem_firmware1", 'Modem 1', registry=registry1)
+i_modem_firmware2 = Info("gw6200_modem_firmware2", 'Modem 2', registry=registry1)
+i_modem_usb_loc1 = Info("gw6200_modem_usb_loc1", 'Modem 1', registry=registry1)
+i_modem_usb_loc2 = Info("gw6200_modem_usb_loc2", 'Modem 2', registry=registry1)
+'''
+
 g_ping_time_to_server1 = Gauge('gw6200_ping_time_to_server1', 'Modem 1', registry=registry1)
 g_ping_time_to_server2 = Gauge('gw6200_ping_time_to_server2', 'Modem 2', registry=registry1)
 g_ping_time_across_stunnel =Gauge("gw6200_ping_time_across_stunnel", 'Modem 1', registry=registry1)
@@ -143,7 +151,7 @@ while(1):
 		# 'list_all_stats' is a list which contains Modem 0 and Modem 1 data; each dataset is a dictionary with a key:value pair for
 		# each element extracted from the mmcli commands in get_modem_status.py
 
-		#pdb.set_trace()
+
 		list_all_stats = get_modem_stats()
 		print("\n", list_all_stats, "\n")
 
@@ -151,7 +159,7 @@ while(1):
 		stun_tunnel_interface = "stun" + str(stun_number)
 		stun_tunnel_server = "10.0." + str(stun_number) + ".1"
 		print("1: ", datetime.datetime.now())
-		#pdb.set_trace()
+
 		#print(datetime.datetime.now())
 		stun_tunnel_avg_ping_time = get_average_ping_time(stun_tunnel_interface,
 										str(STUNNEL_NUM_PINGS_TO_AVERAGE),stun_tunnel_server)
@@ -208,7 +216,7 @@ while(1):
 
 				if i == 0:  # modem 1
 					print("Rsig:", list_all_stats[i]['current_signal_strength'])
-					#pdb.set_trace()
+
 					g_signal_strength1.set(int(list_all_stats[i]['current_signal_strength']))
 					g_duration1.set(float(duration_min)) # up 	time in minutes
 					g_bytes_tx1.set(float(list_all_stats[i]['bytesTx']))
@@ -220,7 +228,11 @@ while(1):
 										"Carrier_config":list_all_stats[i]['carrier_config'],
 										"interface":this_interface_name,
 										"Operator":list_all_stats[i]['operator_name'],
-										"Modem_number":current_modem_number})
+										"Modem_number":current_modem_number,
+										"model":list_all_stats[i]['model'],
+										"firmware":list_all_stats[i]['firmware'],
+										"usb_loc":list_all_stats[i]['usb_loc'],
+										})
 					i_modem_number_1.info({"modem_number":current_modem_number})
 					g_percent_uptime1.set(float(calculate_percentage_uptime(current_modem_number, i,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))
@@ -242,7 +254,11 @@ while(1):
 										"Carrier_config": list_all_stats[i]['carrier_config'],
 										"Interface":this_interface_name,
 										"Operator":list_all_stats[i]['operator_name'],
-										"Modem_number":current_modem_number})
+										"Modem_number":current_modem_number,
+										"model": list_all_stats[i]['model'],
+										"firmware": list_all_stats[i]['firmware'],
+										"usb_loc": list_all_stats[i]['usb_loc'],
+										})
 					i_modem_number_2.info({"Modem_number":current_modem_number})
 					g_percent_uptime2.set(float(calculate_percentage_uptime(current_modem_number, i,
 												list_all_stats[i]['connected'], list_all_stats[i]['locked_status'])))

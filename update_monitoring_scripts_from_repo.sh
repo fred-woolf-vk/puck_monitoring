@@ -10,7 +10,6 @@ rm -f get_modem_status.py
 echo " ----------------------   get updated files "
 wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/collect_db_stats_prometheus.py
 wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/get_modem_status.py
-wget https://raw.githubusercontent.com/fred-woolf-vk/puck_monitoring/master/scan_cell_network.py
 
 chmod 755 collect_db_stats_prometheus.py
 chmod 755 get_modem_status.py
